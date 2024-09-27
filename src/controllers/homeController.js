@@ -1,14 +1,10 @@
-import db from '../models/index';
+import userService from '../services/userService';
 
 let getHomePage = async (req, res) => {
-    try {
-        let data = await db.User.findAll();
-        return res.render('homepage.ejs', {
-            data: JSON.stringify(data)
-        });
-    } catch (e) {
-        console.log(e);
-    }
+    let data = await userService.getAllUsers('ALL');
+    return res.render('homepage.ejs', {
+        dataTable: data
+    })
 }
 
 module.exports = {
