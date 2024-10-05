@@ -116,7 +116,7 @@ let createUser = (data) => {
                     gender: data.gender === '1' ? true : false,
                     avatar: data.avatar,
                     bio: data.bio,
-                    registrationDate: data.registrationDate,
+                    registrationDate: new Date().toISOString(),
                     roleId: data.roleId,
                 })
                 resolve({
