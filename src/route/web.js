@@ -3,6 +3,7 @@ import homeController from '../controllers/homeController';
 import userController from '../controllers/userController';
 import vocabularyController from '../controllers/vocabularyController';
 import categoryExamController from '../controllers/categoryExamController';
+import examController from '../controllers/examController';
 
 let router = express.Router();
 
@@ -34,6 +35,13 @@ let initWebRoutes = (app) => {
     router.post('/api/create-category-exam', categoryExamController.handleCreateCategoryExam);
     router.put('/api/edit-category-exam', categoryExamController.handleEditCategoryExam);
     router.delete('/api/delete-category-exam', categoryExamController.handleDeleteCategoryExam);
+
+    // exam (các bài thi)
+    router.get('/api/get-all-exam', examController.handleGetAllExam);
+    router.post('/api/create-exam', examController.handleCreateExam);
+    router.put('/api/edit-exam', examController.handleEditExam);
+    router.delete('/api/delete-exam', examController.handleDeleteExam);
+
 
     return app.use("/", router);
 }
