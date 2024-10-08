@@ -31,9 +31,9 @@ let initWebRoutes = (app) => {
 
     // category exam (danh mục các năm)
     router.get('/api/get-all-category-exam', categoryExamController.handleGetAllCategoryExam);
-    // router.post('/api/create-vocabulary', categoryExamController.handleCreateVocabulary);
-    // router.put('/api/edit-vocabulary', categoryExamController.handleEditVocabulary);
-    // router.delete('/api/delete-vocabulary', categoryExamController.handleDeleteVocabulary);
+    router.post('/api/create-category-exam', categoryExamController.handleCreateCategoryExam);
+    router.put('/api/edit-category-exam', categoryExamController.handleEditCategoryExam);
+    router.delete('/api/delete-category-exam', categoryExamController.handleDeleteCategoryExam);
 
     return app.use("/", router);
 }
