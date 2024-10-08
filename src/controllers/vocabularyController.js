@@ -13,6 +13,22 @@ let getSearchVocabulary = async (req, res) => {
     }
 }
 
+let getAudioVocabulary = async (req, res) => {
+
+    const { word } = req.query;
+    try {
+        const audioResponse = await axios.get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+        const phonetics = audioResponse.data[0].phonetics;
+        const usAudio = phonetics.find(p => p.audio && p.audio.includes('us'))?.audio;
+        const ukAudio = phonetics.find(p => p.audio && p.audio.includes('uk'))?.audio;
+
+        res.json({ audioUS: usAudio, audioUK: ukAudio });
+    } catch (error) {
+        console.error('Audio not found', error);
+        res.status(500).json({ message: 'Error fetching audio data' });
+    }
+}
+
 let handleGetAllVocabulary = async (req, res) => {
     let id = req.query.id;
     console.log("vocabulary: ", id);
@@ -58,6 +74,7 @@ let handleDeleteVocabulary = async (req, res) => {
 
 module.exports = {
     getSearchVocabulary: getSearchVocabulary,
+    getAudioVocabulary: getAudioVocabulary,
     handleGetAllVocabulary: handleGetAllVocabulary,
     handleCreateVocabulary: handleCreateVocabulary,
     handleEditVocabulary: handleEditVocabulary,

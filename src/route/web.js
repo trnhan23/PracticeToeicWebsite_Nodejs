@@ -25,6 +25,9 @@ let initWebRoutes = (app) => {
     //search vocabulary
     router.get('/api/search-vocabulary', vocabularyController.getSearchVocabulary);
 
+    //get audio vocabulary
+    router.get('/api/audio-vocabulary', vocabularyController.getAudioVocabulary);
+
     router.get('/api/get-all-vocabulary', vocabularyController.handleGetAllVocabulary);
     router.post('/api/create-vocabulary', vocabularyController.handleCreateVocabulary);
     router.put('/api/edit-vocabulary', vocabularyController.handleEditVocabulary);
