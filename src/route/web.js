@@ -45,7 +45,6 @@ let initWebRoutes = (app) => {
     router.put('/api/edit-exam', examController.handleEditExam);
     router.delete('/api/delete-exam', examController.handleDeleteExam);
 
-
     return app.use("/", router);
 }
 
