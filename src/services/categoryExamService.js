@@ -10,7 +10,12 @@ let getAllCateExams = (cateExamId) => {
                 cateExams = await db.Category_Exam.findAll({
                     attributes: {
                         // exclude: ['password']
-                    }
+                    },
+                    include: [
+                        {model: db.Exam, as: 'categoryExamData'}
+                    ],
+                    raw: true,
+                    nest: true
                 })
             }
             if (cateExamId && cateExamId !== 'ALL') {
@@ -18,7 +23,15 @@ let getAllCateExams = (cateExamId) => {
                     where: { id: cateExamId },
                     attributes: {
                         // exclude: ['password']
-                    }
+                    },
+                    include: [
+                        {model: db.Exam, as: 'categoryExamData'}
+                    ]
+                    // raw và nest này nếu không bỏ thì nó chỉ lấy được 1 bảng ghi ở exam 
+                    //(trong khi đó có nhiều bảng ghi có khoá ngoại đến category_exam)
+                    // ,
+                    // raw: true,
+                    // nest: true
                 })
             }
             resolve(cateExams);
