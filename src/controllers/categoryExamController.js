@@ -2,22 +2,32 @@ import cateExamService from '../services/categoryExamService';
 
 
 let handleGetAllCategoryExam = async (req, res) => {
-    let id = req.query.id;
-    console.log("cate-exam: ", id);
-    if (!id) {
+    try {
+        setTimeout(async () => {
+            let id = req.query.id;
+            console.log("cate-exam: ", id);
+            if (!id) {
+                return res.status(200).json({
+                    errCode: 1,
+                    errMessage: "Missing required parameters",
+                    cateExams: []
+                })
+            }
+
+            let cateExams = await cateExamService.getAllCateExams(id);
+            return res.status(200).json({
+                errCode: 0,
+                errMessage: "ok",
+                cateExams
+            })
+        }, 3000);
+    }
+    catch (error) {
         return res.status(200).json({
-            errCode: 1,
-            errMessage: "Missing required parameters",
-            cateExams: []
+            errCode: -1,
+            errMessage: "Error From Server",
         })
     }
-
-    let cateExams = await cateExamService.getAllCateExams(id);
-    return res.status(200).json({
-        errCode: 0,
-        errMessage: "ok",
-        cateExams
-    })
 }
 
 let handleCreateCategoryExam = async (req, res) => {
