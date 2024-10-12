@@ -22,7 +22,6 @@ let getAllCateExams = (cateExamId) => {
                 cateExams = await db.Category_Exam.findOne({
                     where: { id: cateExamId },
                     attributes: {
-                        // exclude: ['password']
                     },
                     include: [
                         {model: db.Exam, as: 'categoryExamData'}
