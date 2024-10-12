@@ -2,9 +2,12 @@ import examService from '../services/examService';
 
 
 let handleGetAllExam = async (req, res) => {
-    let id = req.query.id;
-    console.log("exam: ", id);
-    if (!id) {
+    let examId = req.query.examId;
+    let cateExamId = req.query.cateExamId;
+    console.log("exam id: ", examId);
+    console.log("cate exam id: ", cateExamId);
+
+    if (!examId || !cateExamId) {
         return res.status(200).json({
             errCode: 1,
             errMessage: "Missing required parameters",
@@ -12,7 +15,7 @@ let handleGetAllExam = async (req, res) => {
         })
     }
 
-    let exams = await examService.getAllExams(id);
+    let exams = await examService.getAllExams(examId, cateExamId);
     return res.status(200).json({
         errCode: 0,
         errMessage: "ok",

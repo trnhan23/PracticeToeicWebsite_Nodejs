@@ -1,16 +1,23 @@
 import db from '../models/index';
 
-let getAllExams = (examId) => {
+let getAllExams = (examId, cateExamId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("exam: ", examId);
+            console.log("exam id: ", examId);
+            console.log("cate exam id: ", cateExamId);
 
             let exams = '';
             if (examId === "ALL") {
                 exams = await db.Exam.findAll({
                     attributes: {
-                        // exclude: ['password']
-                    }
+                    },
+                    include: [
+                        {
+                            model: db.Category_Exam,
+                            as: 'categoryExamData',
+                            where: {id: cateExamId}
+                        }
+                    ],
                 })
             }
             if (examId && examId !== 'ALL') {
@@ -18,7 +25,14 @@ let getAllExams = (examId) => {
                     where: { id: examId },
                     attributes: {
                         // exclude: ['password']
-                    }
+                    },
+                    include: [
+                        {
+                            model: db.Category_Exam,
+                            as: 'categoryExamData',
+                            where: {id: cateExamId}
+                        }
+                    ],
                 })
             }
             resolve(exams);

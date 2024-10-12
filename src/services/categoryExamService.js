@@ -11,11 +11,11 @@ let getAllCateExams = (cateExamId) => {
                     attributes: {
                         // exclude: ['password']
                     },
-                    include: [
-                        {model: db.Exam, as: 'categoryExamData'}
-                    ],
-                    raw: true,
-                    nest: true
+                    // include: [
+                    //     {model: db.Exam, as: 'categoryExamData'}
+                    // ],
+                    // raw: true,
+                    // nest: true
                 })
             }
             if (cateExamId && cateExamId !== 'ALL') {
@@ -23,9 +23,9 @@ let getAllCateExams = (cateExamId) => {
                     where: { id: cateExamId },
                     attributes: {
                     },
-                    include: [
-                        {model: db.Exam, as: 'categoryExamData'}
-                    ]
+                    // include: [
+                    //     {model: db.Exam, as: 'categoryExamData'}
+                    // ]
                     // raw và nest này nếu không bỏ thì nó chỉ lấy được 1 bảng ghi ở exam 
                     //(trong khi đó có nhiều bảng ghi có khoá ngoại đến category_exam)
                     // ,
