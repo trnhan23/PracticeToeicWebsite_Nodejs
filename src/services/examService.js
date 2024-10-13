@@ -1,46 +1,60 @@
 import db from '../models/index';
 
-let getAllExams = (examId, cateExamId) => {
+let getAllExams = (examId, cateExamId, page) => {
     return new Promise(async (resolve, reject) => {
         try {
+            const limit = 8;
+            const offset = (page - 1) * limit;
+
             console.log("exam id: ", examId);
             console.log("cate exam id: ", cateExamId);
+            console.log("limit: ", limit);
+            console.log("offset: ", offset);
 
             let exams = '';
+            let totalCount = 0;
+
             if (examId === "ALL") {
-                exams = await db.Exam.findAll({
-                    attributes: {
-                    },
+                let result = await db.Exam.findAndCountAll({
+                    attributes: {},
                     include: [
                         {
                             model: db.Category_Exam,
                             as: 'categoryExamData',
-                            where: {id: cateExamId}
+                            where: { id: cateExamId }
                         }
                     ],
-                })
+                    limit: limit,
+                    offset: offset,
+                    raw: true,
+                    nest: true
+                });
+
+                exams = result.rows;
+                totalCount = result.count;
             }
+
             if (examId && examId !== 'ALL') {
-                exams = await db.Exam.findOne({
+
+                let result = await db.Exam.findOne({
                     where: { id: examId },
-                    attributes: {
-                        // exclude: ['password']
-                    },
-                    include: [
-                        {
-                            model: db.Category_Exam,
-                            as: 'categoryExamData',
-                            where: {id: cateExamId}
-                        }
-                    ],
-                })
+                    attributes: {}
+                });
+
+                exams = result;
+                totalCount = 1;
             }
-            resolve(exams);
+
+            resolve({
+                exams: exams,
+                totalCount: totalCount
+            });
         } catch (e) {
             reject(e);
         }
-    })
+    });
 }
+
 
 let createExam = (data) => {
     return new Promise(async (resolve, reject) => {
