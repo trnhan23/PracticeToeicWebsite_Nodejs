@@ -1,5 +1,34 @@
 import db from '../models/index';
 
+let get8LatestExams = async () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let errCode;
+            let errMessage;
+            let result = await db.Exam.findAll({
+                limit: 8,
+                order: [['createdAt', 'DESC']],
+                raw: true,
+                nest: true
+            });
+            if (result && result.length > 0) {
+                errCode = 0;
+                errMessage = 'ok'
+            } else {
+                errCode = 1;
+                errMessage = 'No exam in database'
+            }
+            resolve({
+                errCode: errCode,
+                errMessage: errMessage,
+                exams: result
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 let getAllExams = (examId, cateExamId, page) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -26,6 +55,7 @@ let getAllExams = (examId, cateExamId, page) => {
                     ],
                     limit: limit,
                     offset: offset,
+                    order: [['createdAt', 'DESC']],
                     raw: true,
                     nest: true
                 });
@@ -38,7 +68,8 @@ let getAllExams = (examId, cateExamId, page) => {
 
                 let result = await db.Exam.findOne({
                     where: { id: examId },
-                    attributes: {}
+                    attributes: {},
+                    order: [['createdAt', 'DESC']],
                 });
 
                 exams = result;
@@ -54,7 +85,6 @@ let getAllExams = (examId, cateExamId, page) => {
         }
     });
 }
-
 
 let createExam = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -145,6 +175,7 @@ let deleteExam = (examId) => {
 }
 
 module.exports = {
+    get8LatestExams: get8LatestExams,
     getAllExams: getAllExams,
     createExam: createExam,
     updateExam: updateExam,

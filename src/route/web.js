@@ -41,6 +41,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-category-exam', categoryExamController.handleDeleteCategoryExam);
 
     // exam (các bài thi)
+    router.get('/api/get-latest-exam', examController.handleGet8LatestExams);
     router.get('/api/get-all-exam', examController.handleGetAllExam);
     router.post('/api/create-exam', examController.handleCreateExam);
     router.put('/api/edit-exam', examController.handleEditExam);

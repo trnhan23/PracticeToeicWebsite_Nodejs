@@ -1,12 +1,17 @@
 import examService from '../services/examService';
 
 
+let handleGet8LatestExams = async (req, res) => {
+    let message = await examService.get8LatestExams();
+    return res.status(200).json(message);
+}
+
 let handleGetAllExam = async (req, res) => {
-    
+
     let examId = req.query.examId;
     let cateExamId = req.query.cateExamId;
     let page = req.query.page;
-    
+
     console.log("exam id: ", examId);
     console.log("cate exam id: ", cateExamId);
 
@@ -51,6 +56,7 @@ let handleDeleteExam = async (req, res) => {
 }
 
 module.exports = {
+    handleGet8LatestExams: handleGet8LatestExams,
     handleGetAllExam: handleGetAllExam,
     handleCreateExam: handleCreateExam,
     handleEditExam: handleEditExam,
