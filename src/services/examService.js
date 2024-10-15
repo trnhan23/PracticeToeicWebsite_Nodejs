@@ -29,58 +29,52 @@ let get8LatestExams = async () => {
     });
 };
 
-let getAllExams = (examId, cateExamId, page) => {
+let getAllExams = (cateExamId, userId, page) => {
     return new Promise(async (resolve, reject) => {
         try {
             const limit = 8;
             const offset = (page - 1) * limit;
 
-            console.log("exam id: ", examId);
-            console.log("cate exam id: ", cateExamId);
-            console.log("limit: ", limit);
-            console.log("offset: ", offset);
+            let result = await db.Exam.findAndCountAll({
+                include: [
+                    {
+                        model: db.Category_Exam,
+                        as: 'categoryExamData',
+                        where: { id: cateExamId },
+                        attributes: ['id', 'titleCategoryExam'] // Chỉ lấy các trường cần thiết
+                    },
+                    {
+                        model: db.User_Exam,
+                        as: 'userExam_ExamData',
+                        where: { userId: userId },
+                        attributes: ['userId', 'examId', 'statusExam'], // Lấy các trường cần thiết
+                        required: false // Đảm bảo kết nối là LEFT JOIN
+                    }
+                ],
+                limit: limit,
+                offset: offset,
+                order: [['createdAt', 'DESC']],
+                raw: false,
+                nest: true
+            });
 
-            let exams = '';
-            let totalCount = 0;
+            let exams = result.rows;
+            let totalCount = result.count;
 
-            if (examId === "ALL") {
-                let result = await db.Exam.findAndCountAll({
-                    attributes: {},
-                    include: [
-                        {
-                            model: db.Category_Exam,
-                            as: 'categoryExamData',
-                            where: { id: cateExamId }
-                        }
-                    ],
-                    limit: limit,
-                    offset: offset,
-                    order: [['createdAt', 'DESC']],
-                    raw: true,
-                    nest: true
+            if (!exams || exams.length === 0) {
+                return resolve({
+                    exams: [],
+                    totalCount: 0
                 });
-
-                exams = result.rows;
-                totalCount = result.count;
-            }
-
-            if (examId && examId !== 'ALL') {
-
-                let result = await db.Exam.findOne({
-                    where: { id: examId },
-                    attributes: {},
-                    order: [['createdAt', 'DESC']],
-                });
-
-                exams = result;
-                totalCount = 1;
             }
 
             resolve({
                 exams: exams,
                 totalCount: totalCount
             });
+
         } catch (e) {
+            console.error("Error fetching exams: ", e);
             reject(e);
         }
     });

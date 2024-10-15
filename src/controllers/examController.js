@@ -8,14 +8,11 @@ let handleGet8LatestExams = async (req, res) => {
 
 let handleGetAllExam = async (req, res) => {
 
-    let examId = req.query.examId;
     let cateExamId = req.query.cateExamId;
     let page = req.query.page;
+    let userId = req.query.userId;
 
-    console.log("exam id: ", examId);
-    console.log("cate exam id: ", cateExamId);
-
-    if (!examId || !cateExamId) {
+    if (!userId || !cateExamId) {
         return res.status(200).json({
             errCode: 1,
             errMessage: "Missing required parameters",
@@ -23,7 +20,7 @@ let handleGetAllExam = async (req, res) => {
         })
     }
 
-    let exams = await examService.getAllExams(examId, cateExamId, page);
+    let exams = await examService.getAllExams(cateExamId, userId, page);
     return res.status(200).json({
         errCode: 0,
         errMessage: "ok",
