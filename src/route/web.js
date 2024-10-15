@@ -4,6 +4,8 @@ import userController from '../controllers/userController';
 import vocabularyController from '../controllers/vocabularyController';
 import categoryExamController from '../controllers/categoryExamController';
 import examController from '../controllers/examController';
+import questionAndAnswer from '../controllers/questionAndAnswerController';
+
 
 let router = express.Router();
 
@@ -46,6 +48,10 @@ let initWebRoutes = (app) => {
     router.post('/api/create-exam', examController.handleCreateExam);
     router.put('/api/edit-exam', examController.handleEditExam);
     router.delete('/api/delete-exam', examController.handleDeleteExam);
+
+
+    // question and answer
+    router.post('/api/create-question-and-answer', questionAndAnswer.handleImportQuestionAndAnswer);
 
     return app.use("/", router);
 }

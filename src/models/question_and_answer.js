@@ -20,14 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     answerC: DataTypes.STRING,
     answerD: DataTypes.STRING,
     correctAnswer: DataTypes.STRING,
-    questionTextScript: DataTypes.STRING,
-    answerAScript: DataTypes.STRING,
-    answerBScript: DataTypes.STRING,
-    answerCScript: DataTypes.STRING,
-    answerDScript: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Question_And_Answer',
+    tableName: 'question_and_answer',
   });
   return Question_And_Answer;
 };

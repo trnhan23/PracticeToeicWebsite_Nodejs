@@ -35,26 +35,6 @@ module.exports = {
       correctAnswer: {
         type: Sequelize.STRING
       },
-      // questionTextScript: DataTypes.STRING,
-      questionTextScript: {
-        type: Sequelize.STRING
-      },
-      // answerAScript: DataTypes.STRING,
-      answerAScript: {
-        type: Sequelize.STRING
-      },
-      // answerBScript: DataTypes.STRING,
-      answerBScript: {
-        type: Sequelize.STRING
-      },
-      // answerCScript: DataTypes.STRING,
-      answerCScript: {
-        type: Sequelize.STRING
-      },
-      // answerDScript: DataTypes.STRING,
-      answerDScript: {
-        type: Sequelize.STRING
-      },
 
       createdAt: {
         allowNull: false,
