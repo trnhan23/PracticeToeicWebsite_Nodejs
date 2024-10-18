@@ -35,6 +35,7 @@ let importFileExam = (data) => {
 
             const readingAndListenings = [];
             const allQuestions = [];
+            const rlAndQAData = [];
 
             for (const item of data) {
                 const readAndListenEntry = await db.Reading_And_Listening.create({
@@ -66,7 +67,6 @@ let importFileExam = (data) => {
                 });
             }
 
-            const rlAndQAData = [];
             allQuestions.forEach(({ readAndListenEntry, questions }) => {
                 questions.forEach((question) => {
                     rlAndQAData.push({
