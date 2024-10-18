@@ -11,6 +11,10 @@ module.exports = {
         type: Sequelize.INTEGER
       },
 
+      numberQuestion: {
+        type: Sequelize.INTEGER
+      },
+
       // questionText: DataTypes.STRING,
       questionText: {
         type: Sequelize.STRING

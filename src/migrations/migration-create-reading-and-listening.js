@@ -23,20 +23,12 @@ module.exports = {
       text: {
         type: Sequelize.TEXT
       },
-      // script: DataTypes.TEXT,
-      script: {
-        type: Sequelize.TEXT
-      },
       // questionType: DataTypes.STRING,
       questionType: {
         type: Sequelize.STRING
       },
       // examId: DataTypes.INTEGER,
       examId: {
-        type: Sequelize.INTEGER
-      },
-      // questionId: DataTypes.INTEGER,
-      questionId: {
         type: Sequelize.INTEGER
       },
 
