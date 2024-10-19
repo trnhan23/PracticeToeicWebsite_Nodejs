@@ -89,16 +89,18 @@ let createExam = (data) => {
                     errMessage: 'Plz enter your title exam!'
                 })
             } else {
-                await db.Exam.create({
+                const examData =  await db.Exam.create({
                     userId: data.userId,
                     categoryExamId: data.categoryExamId,
                     titleExam: data.titleExam,
                     stateExam: data.stateExam === '1' ? true : false,
                     countUserTest: data.countUserTest,
+                    countComment: data.countComment
 
                 })
                 resolve({
                     errCode: 0,
+                    id: examData.id,
                     errMessage: 'ok'
                 })
             }
@@ -128,8 +130,8 @@ let updateExam = (data) => {
                     exam.titleExam = data.titleExam,
                     exam.stateExam = data.stateExam === '1' ? true : false,
                     exam.countUserTest = data.countUserTest,
-
-                    await exam.save();
+                    exam.countComment = data.countComment
+                await exam.save();
 
                 resolve({
                     errCode: 0,

@@ -51,7 +51,6 @@ let initWebRoutes = (app) => {
 
 
     // question and answer
-    router.post('/api/create-question-and-answer', questionAndAnswer.handleImportQuestionAndAnswer);
     router.post('/api/import-exam', questionAndAnswer.handleImportExam);
 
     return app.use("/", router);

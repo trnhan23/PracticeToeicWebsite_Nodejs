@@ -23,12 +23,12 @@ module.exports = {
       titleExam: {
         type: Sequelize.STRING
       },
-      // stateExam: DataTypes.BOOLEAN,
-      stateExam: {
-        type: Sequelize.BOOLEAN
-      },
       // countUserTest: DataTypes.INTEGER,
       countUserTest: {
+        type: Sequelize.INTEGER
+      },
+
+      countComment: {
         type: Sequelize.INTEGER
       },
 

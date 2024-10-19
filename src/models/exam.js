@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     categoryExamId: DataTypes.INTEGER,
     titleExam: DataTypes.STRING,
-    stateExam: DataTypes.BOOLEAN,
     countUserTest: DataTypes.INTEGER,
     countComment: DataTypes.INTEGER,
   }, {
