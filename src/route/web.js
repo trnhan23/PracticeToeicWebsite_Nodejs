@@ -5,7 +5,7 @@ import vocabularyController from '../controllers/vocabularyController';
 import categoryExamController from '../controllers/categoryExamController';
 import examController from '../controllers/examController';
 import questionAndAnswer from '../controllers/questionAndAnswerController';
-
+import cmtController from '../controllers/commentComtroller';
 
 let router = express.Router();
 
@@ -52,6 +52,12 @@ let initWebRoutes = (app) => {
 
     // question and answer
     router.post('/api/import-exam', questionAndAnswer.handleImportExam);
+
+    // comment
+    router.get('/api/get-comment', cmtController.handleGetComment);
+    router.post('/api/create-comment', cmtController.handleCreateComment);
+
+
 
     return app.use("/", router);
 }
