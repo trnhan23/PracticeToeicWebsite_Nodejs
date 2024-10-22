@@ -1,3 +1,4 @@
+import { where } from 'sequelize';
 import db from '../models/index';
 
 let createComment = (data) => {
@@ -51,8 +52,50 @@ let getComment = (examId, userId) => {
     });
 }
 
+let deleteComment = (commentId, currentId) => {
+    return new Promise(async (resolve, reject) => {
+
+        let comments = await db.Comment.findOne({
+            where: {
+                id: commentId,
+                userId: currentId
+            },
+        })
+        if (!comments) {
+            resolve({
+                errCode: 2,
+                errMessage: `The comment isn't exist or user wrong`
+            })
+        }
+
+        let flag = await db.Comment.findOne({
+            where: {
+                parentCmtId: commentId
+            },
+        })
+        if (flag) {
+            await db.Comment.destroy({
+                where: {
+                    parentCmtId: commentId
+                }
+            })
+        }
+
+        await db.Comment.destroy({
+            where: {
+                id: commentId
+            }
+        })
+        resolve({
+            errCode: 0,
+            errMessage: `The comment is delete`
+        })
+    })
+}
+
 module.exports = {
     createComment: createComment,
     getComment: getComment,
+    deleteComment: deleteComment,
 
 }

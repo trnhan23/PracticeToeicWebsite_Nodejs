@@ -56,8 +56,7 @@ let initWebRoutes = (app) => {
     // comment
     router.get('/api/get-comment', cmtController.handleGetComment);
     router.post('/api/create-comment', cmtController.handleCreateComment);
-
-
+    router.delete('/api/delete-comment', cmtController.handleDeleteComment);
 
     return app.use("/", router);
 }

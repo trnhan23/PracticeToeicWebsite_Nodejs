@@ -21,8 +21,21 @@ let handleGetComment = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleDeleteComment = async (req, res) => {
+    if (!req.body.commentId || !req.body.currentId) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: "Missing required parameters!"
+        })
+    }
+    let message = await cmtService.deleteComment(req.body.commentId, req.body.currentId);
+    console.log(message);
+    return res.status(200).json(message);
+}
+
 module.exports = {
     handleCreateComment: handleCreateComment,
     handleGetComment: handleGetComment,
+    handleDeleteComment: handleDeleteComment,
 
 }
