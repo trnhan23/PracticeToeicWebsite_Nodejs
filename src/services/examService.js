@@ -89,7 +89,7 @@ let createExam = (data) => {
                     errMessage: 'Plz enter your title exam!'
                 })
             } else {
-                const examData =  await db.Exam.create({
+                const examData = await db.Exam.create({
                     userId: data.userId,
                     categoryExamId: data.categoryExamId,
                     titleExam: data.titleExam,
@@ -170,11 +170,78 @@ let deleteExam = (examId) => {
     })
 }
 
+let practiceExam = (examId, questionType) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let result = '';
+            if (questionType === 'ALL') {
+                result = await db.Reading_And_Listening.findAll({
+                    where: {
+                        examId: examId,
+                    },
+                    include: [
+                        {
+                            model: db.RL_And_QA,
+                            as: 'RLQA_ReadAndListenData',
+                            attributes: ['id', 'readAndListenId', 'questionAndAnswerId'],
+                            include: [
+                                {
+                                    model: db.Question_And_Answer,
+                                    as: 'RLQA_QuestionAndAnswerData',
+                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer']
+                                }
+                            ]
+                        }
+                    ]
+                });
+            } else if (questionType === "Part 1" ||
+                questionType === "Part 2" ||
+                questionType === "Part 3" ||
+                questionType === "Part 4" ||
+                questionType === "Part 5" ||
+                questionType === "Part 6" ||
+                questionType === "Part 7") {
+                result = await db.Reading_And_Listening.findAll({
+                    where: {
+                        examId: examId,
+                        questionType: questionType
+                    },
+                    include: [
+                        {
+                            model: db.RL_And_QA,
+                            as: 'RLQA_ReadAndListenData',
+                            attributes: ['id', 'readAndListenId', 'questionAndAnswerId'],
+                            include: [
+                                {
+                                    model: db.Question_And_Answer,
+                                    as: 'RLQA_QuestionAndAnswerData',
+                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer']
+                                }
+                            ]
+                        }
+                    ]
+                });
+            }
+
+            resolve({
+                examId: examId,
+                questionType: questionType,
+                data: result
+            });
+        } catch (e) {
+            console.error("Error fetching exams: ", e);
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     get8LatestExams: get8LatestExams,
     getAllExams: getAllExams,
     createExam: createExam,
     updateExam: updateExam,
     deleteExam: deleteExam,
+    practiceExam: practiceExam,
+
 
 }

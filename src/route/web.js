@@ -49,6 +49,10 @@ let initWebRoutes = (app) => {
     router.put('/api/edit-exam', examController.handleEditExam);
     router.delete('/api/delete-exam', examController.handleDeleteExam);
 
+    // luyện thi
+    router.get('/api/get-practice-exam', examController.handlePracticeExam);
+
+
 
     // question and answer
     router.post('/api/import-exam', questionAndAnswer.handleImportExam);

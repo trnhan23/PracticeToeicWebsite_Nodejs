@@ -52,11 +52,32 @@ let handleDeleteExam = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handlePracticeExam = async (req, res) => {
+    let examId = req.query.examId;
+    let questionType = req.query.questionType;
+
+    if (!examId || !questionType) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: "Missing required parameters",
+            exams: []
+        })
+    }
+
+    let exams = await examService.practiceExam(examId, questionType);
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: "ok",
+        exams
+    })
+}
+
 module.exports = {
     handleGet8LatestExams: handleGet8LatestExams,
     handleGetAllExam: handleGetAllExam,
     handleCreateExam: handleCreateExam,
     handleEditExam: handleEditExam,
     handleDeleteExam: handleDeleteExam,
+    handlePracticeExam: handlePracticeExam,
 
 }
