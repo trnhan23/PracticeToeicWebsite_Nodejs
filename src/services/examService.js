@@ -188,9 +188,10 @@ let practiceExam = (examId, questionType) => {
                                 {
                                     model: db.Question_And_Answer,
                                     as: 'RLQA_QuestionAndAnswerData',
-                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer']
+                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer', 'numberQuestion']
                                 }
-                            ]
+                            ],
+                            order: [['numberQuestion', 'DESC']],
                         }
                     ]
                 });
@@ -215,9 +216,10 @@ let practiceExam = (examId, questionType) => {
                                 {
                                     model: db.Question_And_Answer,
                                     as: 'RLQA_QuestionAndAnswerData',
-                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer']
+                                    attributes: ['id', 'questionText', 'answerA', 'answerB', 'answerC', 'answerD', 'correctAnswer', 'numberQuestion']
                                 }
-                            ]
+                            ],
+                            order: [['numberQuestion', 'DESC']],
                         }
                     ]
                 });
