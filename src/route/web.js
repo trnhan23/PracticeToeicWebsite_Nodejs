@@ -51,6 +51,7 @@ let initWebRoutes = (app) => {
 
     // luyện thi
     router.get('/api/get-practice-exam', examController.handlePracticeExam);
+    router.get('/api/get-answer-exam', examController.handleGetAnswerExam);
 
     // question and answer
     router.post('/api/import-exam', questionAndAnswer.handleImportExam);
@@ -59,6 +60,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-comment', cmtController.handleGetComment);
     router.post('/api/create-comment', cmtController.handleCreateComment);
     router.delete('/api/delete-comment', cmtController.handleDeleteComment);
+
 
     return app.use("/", router);
 }

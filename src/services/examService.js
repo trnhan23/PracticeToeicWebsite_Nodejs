@@ -237,6 +237,41 @@ let practiceExam = (examId, questionType) => {
     });
 };
 
+let getAnswerExam = (examId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let result = await db.Reading_And_Listening.findAll({
+                where: {
+                    examId: examId
+                },
+                attributes: ['id', 'questionType'],
+                include: [
+                    {
+                        model: db.RL_And_QA,
+                        as: 'RLQA_ReadAndListenData',
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.Question_And_Answer,
+                                as: 'RLQA_QuestionAndAnswerData',
+                                attributes: ['correctAnswer', 'numberQuestion']
+                            }
+                        ],
+                        order: [['numberQuestion', 'DESC']],
+                    }
+                ]
+            });
+            resolve({
+                examId: examId,
+                data: result
+            });
+        } catch (e) {
+            console.error("Error fetching answers: ", e);
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     get8LatestExams: get8LatestExams,
     getAllExams: getAllExams,
@@ -244,6 +279,6 @@ module.exports = {
     updateExam: updateExam,
     deleteExam: deleteExam,
     practiceExam: practiceExam,
-
+    getAnswerExam: getAnswerExam,
 
 }
