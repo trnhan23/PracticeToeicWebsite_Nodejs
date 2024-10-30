@@ -52,6 +52,7 @@ let initWebRoutes = (app) => {
     // luyện thi
     router.get('/api/get-practice-exam', examController.handlePracticeExam);
     router.get('/api/get-answer-exam', examController.handleGetAnswerExam);
+    router.get('/api/get-answer-by-part', examController.handleGetAnswerByPart);
 
     // question and answer
     router.post('/api/import-exam', questionAndAnswer.handleImportExam);

@@ -272,6 +272,93 @@ let getAnswerExam = (examId) => {
     })
 }
 
+let getAnswerByPart = (examId, part) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let result = {}
+            if (part !== 'all') {
+                result = await db.Reading_And_Listening.findAll({
+                    where: {
+                        examId: examId,
+                        questionType: part
+                    },
+                    attributes: ['id', 'questionType'],
+                    include: [
+                        {
+                            model: db.RL_And_QA,
+                            as: 'RLQA_ReadAndListenData',
+                            attributes: ['id'],
+                            include: [
+                                {
+                                    model: db.Question_And_Answer,
+                                    as: 'RLQA_QuestionAndAnswerData',
+                                    attributes: ['correctAnswer', 'numberQuestion']
+                                }
+                            ],
+                            order: [['numberQuestion', 'DESC']],
+                        }
+                    ]
+                });
+            } else {
+                result = await db.Reading_And_Listening.findAll({
+                    where: {
+                        examId: examId,
+                    },
+                    attributes: ['id', 'questionType'],
+                    include: [
+                        {
+                            model: db.RL_And_QA,
+                            as: 'RLQA_ReadAndListenData',
+                            attributes: ['id'],
+                            include: [
+                                {
+                                    model: db.Question_And_Answer,
+                                    as: 'RLQA_QuestionAndAnswerData',
+                                    attributes: ['correctAnswer', 'numberQuestion']
+                                }
+                            ],
+                            order: [['numberQuestion', 'DESC']],
+                        }
+                    ]
+                });
+            }
+
+            let format = formatCorrectAnswers(result);
+            resolve({
+                examId: examId,
+                data: format
+            });
+        } catch (e) {
+            console.error("Error fetching answers: ", e);
+            reject(e);
+        }
+    })
+}
+
+let formatCorrectAnswers = (data) => {
+    const formattedAnswers = {};
+
+    data.forEach(item => {
+        const part = item.questionType;
+
+        if (!formattedAnswers[part]) {
+            formattedAnswers[part] = {};
+        }
+
+        if (item.RLQA_ReadAndListenData && Array.isArray(item.RLQA_ReadAndListenData)) {
+            item.RLQA_ReadAndListenData.forEach(readAndListenData => {
+                if (readAndListenData.RLQA_QuestionAndAnswerData && Array.isArray([readAndListenData.RLQA_QuestionAndAnswerData])) {
+                    const questionData = readAndListenData.RLQA_QuestionAndAnswerData;
+
+                    formattedAnswers[part][questionData.numberQuestion] = questionData.correctAnswer;
+                }
+            });
+        }
+    });
+
+    return formattedAnswers;
+};
+
 module.exports = {
     get8LatestExams: get8LatestExams,
     getAllExams: getAllExams,
@@ -280,5 +367,7 @@ module.exports = {
     deleteExam: deleteExam,
     practiceExam: practiceExam,
     getAnswerExam: getAnswerExam,
+    getAnswerByPart: getAnswerByPart,
+    formatCorrectAnswers: formatCorrectAnswers,
 
 }
