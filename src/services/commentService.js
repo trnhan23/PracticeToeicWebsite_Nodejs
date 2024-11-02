@@ -31,7 +31,6 @@ let createComment = (data) => {
 let getComment = (examId, userId) => {
     return new Promise(async (resolve, reject) => {
         try {
-
             const comments = await db.Comment.findAll({
                 where: { examId: examId },
                 include: [

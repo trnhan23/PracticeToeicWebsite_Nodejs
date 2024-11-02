@@ -254,7 +254,7 @@ let getAnswerExam = (examId) => {
                             {
                                 model: db.Question_And_Answer,
                                 as: 'RLQA_QuestionAndAnswerData',
-                                attributes: ['correctAnswer', 'numberQuestion']
+                                attributes: ['id', 'correctAnswer', 'numberQuestion']
                             }
                         ],
                         order: [['numberQuestion', 'DESC']],

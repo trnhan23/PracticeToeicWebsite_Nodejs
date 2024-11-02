@@ -1,29 +1,66 @@
 import db from '../models/index';
 
+let getTestResult = (examId, userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const tests = await db.Test.findAll({
+                where: {
+                    examId: examId,
+                    userId: userId
+                },
+                include: [
+                    {
+                        model: db.Test_Result,
+                        as: 'TestResult_TestData',
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.Question_And_Answer,
+                                as: 'TestResult_QuestionData',
+                                attributes: ['id'],
+                                include: [
+                                    {
+                                        model: db.RL_And_QA,
+                                        as: 'RLQA_QuestionAndAnswerData',
+                                        attributes: ['id'],
+                                        include: [
+                                            {
+                                                model: db.Reading_And_Listening,
+                                                as: 'RLQA_ReadAndListenData',
+                                                attributes: ['id', 'questionType']
+                                            }
+                                        ],
+
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                order: [['createdAt', 'DESC']],
+            })
+
+            resolve(tests)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 // lưu kết quả làm bài
 let saveTestResult = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
             // tạo test
             let test = await createTest(data.test);
-            console.log("Test: ", test);
-
             // tạo 1 loạt test result
             let testResult = await bulkCreateTestResult(test.testId, data.result.questions);
-            console.log("testResult: ", testResult);
-
             // tính toán số câu làm đúng, sai, tổng
             let cal = await calculateCorrectAnswer(testResult);
-            console.log("Cal: ", cal);
             // đếm câu theo Part
             let count = await countQuestionByPart(test.testId);
-            console.log("Count: ", count);
-
             let format = await formatCountByPart(count);
-            console.log("Format: ", format);
-
             let calTotal = await calculateTotals(format);
-            console.log("calTotal: ", calTotal);
 
 
             let updateData = ({
@@ -38,6 +75,40 @@ let saveTestResult = (data) => {
             let res = await updateTest(updateData);
             resolve(res);
 
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+// cập nhật countUserTest khi 1 người test
+let updateCountUserTest = (examId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let exam = await db.Exam.findOne({
+                where: { id: examId },
+                // raw: false
+            })
+            if (exam) {
+                exam.countUserTest = exam.countUserTest + 1,
+                    await exam.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Update the cate exam succeeds!'
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: `Category exam not not found`
+                });
+            }
         } catch (e) {
             reject(e);
         }
@@ -213,6 +284,7 @@ let createTest = (data) => {
                     errMessage: 'Plz enter your information create test!'
                 })
             } else {
+                // let res = await updateCountUserTest(data.examId);
                 const currentDate = new Date().toISOString().split('T')[0];
                 const testData = await db.Test.create({
                     examId: data.examId,
@@ -278,5 +350,7 @@ module.exports = {
     countQuestionByPart: countQuestionByPart,
     formatCountByPart: formatCountByPart,
     calculateTotals: calculateTotals,
+    getTestResult: getTestResult,
+    updateCountUserTest: updateCountUserTest,
 
 }

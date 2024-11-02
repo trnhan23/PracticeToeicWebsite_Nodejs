@@ -64,6 +64,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-comment', cmtController.handleDeleteComment);
 
     // test - test result
+    router.get('/api/get-test-result', testController.handleGetTestResult);
     router.post('/api/save-test-result', testController.handleSaveTestResult);
 
 
