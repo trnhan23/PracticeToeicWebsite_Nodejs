@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Test_Result.belongsTo(models.Test, { foreignKey: 'testId', as: 'TestResult_TestData' });
+      Test_Result.belongsTo(models.Question_And_Answer, { foreignKey: 'questionId', as: 'TestResult_QuestionData' });
+
     }
   }
   Test_Result.init({
@@ -22,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Test_Result',
+    tableName: 'test_result',
+
   });
   return Test_Result;
 };

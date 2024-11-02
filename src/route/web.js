@@ -6,6 +6,7 @@ import categoryExamController from '../controllers/categoryExamController';
 import examController from '../controllers/examController';
 import questionAndAnswer from '../controllers/questionAndAnswerController';
 import cmtController from '../controllers/commentComtroller';
+import testController from '../controllers/testController';
 
 let router = express.Router();
 
@@ -61,6 +62,9 @@ let initWebRoutes = (app) => {
     router.get('/api/get-comment', cmtController.handleGetComment);
     router.post('/api/create-comment', cmtController.handleCreateComment);
     router.delete('/api/delete-comment', cmtController.handleDeleteComment);
+
+    // test - test result
+    router.post('/api/save-test-result', testController.handleSaveTestResult);
 
 
     return app.use("/", router);

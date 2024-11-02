@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Exam.belongsTo(models.Category_Exam, { foreignKey: 'categoryExamId', as: 'categoryExamData' });
       Exam.hasMany(models.User_Exam, { foreignKey: 'examId', as: 'userExam_ExamData' });
+      Exam.hasMany(models.Test, { foreignKey: 'examId', as: 'Test_ExamData' });
 
     }
   }

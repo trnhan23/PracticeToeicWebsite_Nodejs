@@ -35,8 +35,16 @@ module.exports = {
       testDate: {
         type: Sequelize.DATE
       },
-      // score: DataTypes.INTEGER,
-      score: {
+      // skipAnswer: DataTypes.INTEGER,
+      skipAnswer: {
+        type: Sequelize.INTEGER
+      },
+      // countListenAnswer: DataTypes.INTEGER,
+      countListenAnswer: {
+        type: Sequelize.INTEGER
+      },
+      // countReadAnswer: DataTypes.INTEGER,
+      countReadAnswer: {
         type: Sequelize.INTEGER
       },
 
