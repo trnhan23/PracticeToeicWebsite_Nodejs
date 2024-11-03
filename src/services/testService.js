@@ -1,5 +1,80 @@
 import db from '../models/index';
 
+let getDetailTestResult = (testId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!testId) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let test = await db.Test.findOne({
+                where: { id: testId },
+            })
+            let part = formatCountByPart(await countQuestionByPart(testId));
+            let parts = getSortedParts(part);
+            let scoreListen = await getScore(test.countListenAnswer);
+            let scoreRead = await getScore(test.countReadAnswer);
+            resolve({
+                errCode: 0,
+                errMessage: 'ok',
+                tests: ({
+                    testId: test.id,
+                    correctAnswer: test.correctAnswer || 0,
+                    incorrectAnswer: test.totalQuestion - (test.correctAnswer + test.skipAnswer),
+                    skipAnswer: test.skipAnswer || 0,
+                    countListenAnswer: test.countListenAnswer || 0,
+                    countReadAnswer: test.countReadAnswer || 0,
+                    listenScore: scoreListen.listenScore || 0,
+                    readingScore: scoreRead.readingScore || 0,
+                    totalQuestion: test.totalQuestion || 0,
+                    score: scoreListen.listenScore || 0 + scoreRead.readingScore || 0,
+                    testTime: test.testTime,
+                    parts,
+                }),
+
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+// lấy điểm
+let getScore = (score) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!score) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let scores = await db.Score.findOne({
+                where: {
+                    correctAnswer: score
+                },
+            })
+            resolve(scores);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+// sắp xếp part
+let getSortedParts = (part) => {
+    return Object.keys(part).sort((a, b) => {
+        const partA = parseInt(a.replace("Part ", ""), 10);
+        const partB = parseInt(b.replace("Part ", ""), 10);
+        return partA - partB;
+    });
+}
+
+// hàm lấy tất cả các test của người dùng theo eamId và userId
 let getTestResult = (examId, userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -394,5 +469,8 @@ module.exports = {
     getTestResult: getTestResult,
     updateCountUserTest: updateCountUserTest,
     updateStatusExam: updateStatusExam,
+    getDetailTestResult: getDetailTestResult,
+    getSortedParts: getSortedParts,
+    getScore: getScore,
 
 }
