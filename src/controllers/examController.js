@@ -1,5 +1,19 @@
 import examService from '../services/examService';
 
+let handleGetExam = async (req, res) => {
+    if (!req.query.examId) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: "Missing required parameters",
+        })
+    }
+    let exam = await examService.getExam(req.query.examId);
+    return res.status(200).json({
+        errCode: 0,
+        errMessage: "ok",
+        exam
+    });
+}
 
 let handleGet8LatestExams = async (req, res) => {
     let message = await examService.get8LatestExams();
@@ -119,5 +133,6 @@ module.exports = {
     handlePracticeExam: handlePracticeExam,
     handleGetAnswerExam: handleGetAnswerExam,
     handleGetAnswerByPart: handleGetAnswerByPart,
+    handleGetExam: handleGetExam,
 
 }

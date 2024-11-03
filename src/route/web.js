@@ -49,6 +49,8 @@ let initWebRoutes = (app) => {
     router.post('/api/create-exam', examController.handleCreateExam);
     router.put('/api/edit-exam', examController.handleEditExam);
     router.delete('/api/delete-exam', examController.handleDeleteExam);
+    router.get('/api/get-exam', examController.handleGetExam);
+
 
     // luyện thi
     router.get('/api/get-practice-exam', examController.handlePracticeExam);
@@ -66,7 +68,9 @@ let initWebRoutes = (app) => {
     // test - test result
     router.get('/api/get-test-result', testController.handleGetTestResult);
     router.post('/api/save-test-result', testController.handleSaveTestResult);
-
+    
+    // update countUserTest
+    router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);
 
     return app.use("/", router);
 }

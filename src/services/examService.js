@@ -359,6 +359,33 @@ let formatCorrectAnswers = (data) => {
     return formattedAnswers;
 };
 
+let getExam = (examId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!examId) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let exam = await db.Exam.findOne({
+                where: { id: examId },
+                include: [
+                    {
+                        model: db.User_Exam,
+                        as: 'userExam_ExamData',
+                        attributes: ['statusExam'],
+                    }
+                ]
+            })
+            resolve(exam)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     get8LatestExams: get8LatestExams,
     getAllExams: getAllExams,
@@ -369,5 +396,5 @@ module.exports = {
     getAnswerExam: getAnswerExam,
     getAnswerByPart: getAnswerByPart,
     formatCorrectAnswers: formatCorrectAnswers,
-
+    getExam: getExam,
 }

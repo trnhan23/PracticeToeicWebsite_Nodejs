@@ -61,7 +61,10 @@ let saveTestResult = (data) => {
             let count = await countQuestionByPart(test.testId);
             let format = await formatCountByPart(count);
             let calTotal = await calculateTotals(format);
-
+            // cập nhật +1 countUserTest
+            await updateCountUserTest(data.test.examId);
+            // cập nhật statusExam trong User_Exam
+            await updateStatusExam(data.test.examId, data.test.userId);
 
             let updateData = ({
                 testId: test.testId,
@@ -80,11 +83,49 @@ let saveTestResult = (data) => {
         }
     })
 }
+
+// cập nhật statusExam trong User_Exam
+let updateStatusExam = (examId, userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!examId || userId) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let exam = await db.User_Exam.findOne({
+                where: {
+                    examId: examId,
+                    userId: userId
+                },
+            })
+            if (exam) {
+                exam.statusExam = true,
+                    await exam.save();
+            } else {
+                await db.User_Exam.create({
+                    userId: userId,
+                    examId: examId,
+                    statusExam: true,
+                })
+            }
+            resolve({
+                errCode: 0,
+                errMessage: 'Update the count user test succeeds!'
+            });
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 // cập nhật countUserTest khi 1 người test
 let updateCountUserTest = (examId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.id) {
+            if (!examId) {
                 resolve({
                     errCode: 2,
                     errMessage: 'Missing required parameters'
@@ -101,12 +142,12 @@ let updateCountUserTest = (examId) => {
 
                 resolve({
                     errCode: 0,
-                    errMessage: 'Update the cate exam succeeds!'
+                    errMessage: 'Update the count user test succeeds!'
                 });
             } else {
                 resolve({
                     errCode: 1,
-                    errMessage: `Category exam not not found`
+                    errMessage: `Error update count user test`
                 });
             }
         } catch (e) {
@@ -352,5 +393,6 @@ module.exports = {
     calculateTotals: calculateTotals,
     getTestResult: getTestResult,
     updateCountUserTest: updateCountUserTest,
+    updateStatusExam: updateStatusExam,
 
 }
