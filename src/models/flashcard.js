@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Flashcard.belongsTo(models.User, { foreignKey: 'userId', as: 'FlashcardData' })
+      Flashcard.hasMany(models.Flashcard_Vocabulary, { foreignKey: 'flashcardId', as: 'FV_FlashcardData' })
     }
   }
   Flashcard.init({

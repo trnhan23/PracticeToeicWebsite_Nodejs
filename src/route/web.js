@@ -7,6 +7,7 @@ import examController from '../controllers/examController';
 import questionAndAnswer from '../controllers/questionAndAnswerController';
 import cmtController from '../controllers/commentComtroller';
 import testController from '../controllers/testController';
+import flashcardController from '../controllers/flashcardController';
 
 let router = express.Router();
 
@@ -72,6 +73,15 @@ let initWebRoutes = (app) => {
     
     // update countUserTest
     router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);
+
+    //flashcard - vocabulary-flashcard
+    router.get('/api/get-all-flashcard', flashcardController.handleGetAllFlashcard);
+    //router.post('/api/create-flashcard', flashcardController.handleCreateFlashcard);
+    //router.put('/api/edit-flashcard', flashcardController.handleEditFlashcard);
+    //router.delete('/api/delete-flashcard', flashcardController.handleDeleteFlashcard);
+
+    router.post('/api/save-vocab-flashcard', flashcardController.handleSaveVocabOnFlashcard);
+    //router.delete('/api/delete-vocab-flashcard', flashcardController.handleDeleteVocabFromFlashcard);
 
     return app.use("/", router);
 }

@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Vocabulary.hasMany(models.Flashcard_Vocabulary, { foreignKey: 'vocabularyId', as: 'FV_VocabularyData' })
         }
     }
     Vocabulary.init({
@@ -25,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         sequelize,
         modelName: 'Vocabulary',
+        tableName: 'vocabularies',
     });
     return Vocabulary;
 };

@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Flashcard_Vocabulary.belongsTo(models.Flashcard, { foreignKey: 'flashcardId', as: 'FV_FlashcardData' });
+      Flashcard_Vocabulary.belongsTo(models.Vocabulary, { foreignKey: 'vocabularyId', as: 'FV_VocabularyData' });
     }
   }
   Flashcard_Vocabulary.init({
@@ -21,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Flashcard_Vocabulary',
+    tableName: 'flashcard_vocabulary',
   });
   return Flashcard_Vocabulary;
 };
