@@ -1,17 +1,50 @@
 import db from '../models/index';
 
-const getAllFlashcard = async (userId) => {
+// const getAllFlashcard = async (userId) => {
+//     return new Promise(async (resolve, reject) => {
+//         try {
+//             const flashcards = await db.Flashcard.findAll({
+//                 where: { userId: userId },
+//                 raw: true,
+//             });
+
+//             resolve({
+//                 errCode: 0,
+//                 flashcards,
+//             });
+//         } catch (error) {
+//             console.error('Error fetching flashcards:', error);
+//             reject({
+//                 errCode: 1,
+//                 errMessage: 'Lỗi hệ thống',
+//             });
+//         }
+//     });
+// };
+
+const getAllFlashcard = async (userId, page) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const flashcards = await db.Flashcard.findAll({
+            const limit = 8;
+            const offset = (page - 1) * limit;
+
+            const result = await db.Flashcard.findAndCountAll({
                 where: { userId: userId },
+                limit: limit,
+                offset: offset,
+                order: [['createdAt', 'DESC']],
                 raw: true,
             });
 
+            const flashcards = result.rows;
+            const totalCount = result.count;
+
             resolve({
                 errCode: 0,
-                flashcards,
+                flashcards: flashcards,
+                totalCount: totalCount
             });
+
         } catch (error) {
             console.error('Error fetching flashcards:', error);
             reject({
@@ -21,6 +54,7 @@ const getAllFlashcard = async (userId) => {
         }
     });
 };
+
 
 // const saveVocabularyToFlashcard = async (flashcardId, vocabularyData) => {
 //     return new Promise(async (resolve, reject) => {

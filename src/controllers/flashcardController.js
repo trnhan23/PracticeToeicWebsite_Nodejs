@@ -1,8 +1,7 @@
 import flashcardService from '../services/flashcardService';
 
 let handleGetAllFlashcard = async (req, res) => {
-    const { userId} = req.query;
-    console.log("userId: ", userId);
+    const { userId, page} = req.query;
 
     if (!userId) {
         return res.status(400).json({
@@ -13,7 +12,7 @@ let handleGetAllFlashcard = async (req, res) => {
     }
 
     try {
-        let flashcards = await flashcardService.getAllFlashcard(userId);
+        let flashcards = await flashcardService.getAllFlashcard(userId, page);
         return res.status(200).json(flashcards);
     } catch (error) {
         console.error('Error fetching flashcards:', error);
