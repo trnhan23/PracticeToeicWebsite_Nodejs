@@ -1,6 +1,25 @@
 import flashcardService from '../services/flashcardService';
 
 let handleGetAllFlashcard = async (req, res) => {
+    const { userId} = req.query;
+
+    if (!userId) {
+        return res.status(400).json({
+            errCode: 1,
+            errMessage: "Missing userId",
+            flashcards: [],
+        });
+    }
+
+    try {
+        let flashcards = await flashcardService.getAllFlashcard(userId);
+        return res.status(200).json(flashcards);
+    } catch (error) {
+        return res.status(500).json({ errCode: 1, errMessage: 'Lỗi hệ thống' });
+    }
+};
+
+let handleGetAllFlashcardPagination = async (req, res) => {
     const { userId, page} = req.query;
 
     if (!userId) {
@@ -12,7 +31,7 @@ let handleGetAllFlashcard = async (req, res) => {
     }
 
     try {
-        let flashcards = await flashcardService.getAllFlashcard(userId, page);
+        let flashcards = await flashcardService.getAllFlashcardPagination(userId, page);
         return res.status(200).json(flashcards);
     } catch (error) {
         console.error('Error fetching flashcards:', error);
@@ -81,6 +100,7 @@ let handleSaveVocabOnFlashcard = async (req, res) => {
 
 module.exports = {
     handleGetAllFlashcard: handleGetAllFlashcard,
+    handleGetAllFlashcardPagination: handleGetAllFlashcardPagination,
     handleCreateFlashcard: handleCreateFlashcard,
     // handleEditFlashcard: handleEditFlashcard,
     // handleDeleteFlashcard: handleDeleteFlashcard,

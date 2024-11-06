@@ -1,28 +1,28 @@
 import db from '../models/index';
 
-// const getAllFlashcard = async (userId) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             const flashcards = await db.Flashcard.findAll({
-//                 where: { userId: userId },
-//                 raw: true,
-//             });
+const getAllFlashcard = async (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const flashcards = await db.Flashcard.findAll({
+                where: { userId: userId },
+                raw: true,
+            });
 
-//             resolve({
-//                 errCode: 0,
-//                 flashcards,
-//             });
-//         } catch (error) {
-//             console.error('Error fetching flashcards:', error);
-//             reject({
-//                 errCode: 1,
-//                 errMessage: 'Lỗi hệ thống',
-//             });
-//         }
-//     });
-// };
+            resolve({
+                errCode: 0,
+                flashcards,
+            });
+        } catch (error) {
+            console.error('Error fetching flashcards:', error);
+            reject({
+                errCode: 1,
+                errMessage: 'Lỗi hệ thống',
+            });
+        }
+    });
+};
 
-const getAllFlashcard = async (userId, page) => {
+const getAllFlashcardPagination = async (userId, page) => {
     return new Promise(async (resolve, reject) => {
         try {
             const limit = 8;
@@ -296,6 +296,7 @@ let saveVocabulary = (data) => {
 
 module.exports = {
     getAllFlashcard: getAllFlashcard,
+    getAllFlashcardPagination: getAllFlashcardPagination,
     createFlashcard: createFlashcard,
     // updateFlashcard: updateFlashcard,
     // deleteFlashcard: deleteFlashcard,

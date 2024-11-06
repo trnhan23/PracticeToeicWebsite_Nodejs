@@ -75,6 +75,7 @@ let initWebRoutes = (app) => {
     router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);
 
     //flashcard - vocabulary-flashcard
+    router.get('/api/get-all-flashcard-pagination', flashcardController.handleGetAllFlashcardPagination);
     router.get('/api/get-all-flashcard', flashcardController.handleGetAllFlashcard);
     router.post('/api/create-flashcard', flashcardController.handleCreateFlashcard);
     //router.put('/api/edit-flashcard', flashcardController.handleEditFlashcard);
