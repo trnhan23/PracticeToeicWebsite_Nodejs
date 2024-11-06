@@ -4,13 +4,13 @@ const getAllFlashcard = async (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const flashcards = await db.Flashcard.findAll({
-                where: { userId }, // Lấy flashcards của user đó
-                raw: true, // Đảm bảo trả về dữ liệu đơn giản
+                where: { userId: userId },
+                raw: true,
             });
 
             resolve({
                 errCode: 0,
-                data: flashcards, // Đặt flashcards vào `data`
+                flashcards,
             });
         } catch (error) {
             console.error('Error fetching flashcards:', error);

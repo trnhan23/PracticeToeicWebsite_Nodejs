@@ -1,8 +1,8 @@
 import flashcardService from '../services/flashcardService';
 
 let handleGetAllFlashcard = async (req, res) => {
-    const { userId, page = 1, itemsPerPage = 10 } = req.query;
-    console.log("userId: ", userId); // Kiểm tra userId từ query params
+    const { userId} = req.query;
+    console.log("userId: ", userId);
 
     if (!userId) {
         return res.status(400).json({
@@ -14,11 +14,7 @@ let handleGetAllFlashcard = async (req, res) => {
 
     try {
         let flashcards = await flashcardService.getAllFlashcard(userId);
-        return res.status(200).json({
-            errCode: 0,
-            errMessage: "ok",
-            data: { flashcards }, // Đóng gói vào `data` để dễ xử lý ở frontend
-        });
+        return res.status(200).json(flashcards);
     } catch (error) {
         console.error('Error fetching flashcards:', error);
         return res.status(500).json({ errCode: 1, errMessage: 'Lỗi hệ thống' });
