@@ -269,30 +269,43 @@ let saveVocabFlash = (vocabularyId, data) => {
 let saveVocabulary = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (data === "") {
+            if (!data || data.word === "") {
                 resolve({
                     errCode: 1,
                     errMessage: 'Error vocabulary!'
-                })
+                });
             } else {
-                const vocabData = await db.Vocabulary.create({
-                    word: data.word,
-                    definition: data.definition,
-                    partOfSpeech: data.partOfSpeech,
-                    exampleSentence: data.exampleSentence,
-                    pronunciation: data.pronunciation,
+                let vocabData = await db.Vocabulary.findOne({
+                    where: { word: data.word },
+                });
 
-                })
-                resolve({
-                    errCode: 0,
-                    id: vocabData.id
-                })
+                if (vocabData) {
+                    resolve({
+                        errCode: 0,
+                        id: vocabData.id
+                    });
+
+                } else {
+                    vocabData = await db.Vocabulary.create({
+                        word: data.word,
+                        definition: data.definition,
+                        partOfSpeech: data.partOfSpeech,
+                        exampleSentence: data.exampleSentence,
+                        pronunciation: data.pronunciation,
+                    });
+                    resolve({
+                        errCode: 0,
+                        id: vocabData.id
+                    });
+                }
             }
         } catch (e) {
+            console.error("Error saving vocabulary:", e);
             reject(e);
         }
     });
-}
+};
+
 
 module.exports = {
     getAllFlashcard: getAllFlashcard,
