@@ -20,11 +20,10 @@ let handleGetAllFlashcard = async (req, res) => {
     }
 };
 
-// let handleCreateFlashcard = async (req, res) => {
-//     let message = await flashcardService.createFlashcard(req.body);
-//     console.log("flashcard create: ", message);
-//     return res.status(200).json(message);
-// }
+let handleCreateFlashcard = async (req, res) => {
+    let message = await flashcardService.createFlashcard(req.body);
+    return res.status(200).json(message);
+}
 
 // let handleEditFlashcard = async (req, res) => {
 //     let message = await flashcardService.updateFlashcard(req.body);
@@ -82,7 +81,7 @@ let handleSaveVocabOnFlashcard = async (req, res) => {
 
 module.exports = {
     handleGetAllFlashcard: handleGetAllFlashcard,
-    // handleCreateFlashcard: handleCreateFlashcard,
+    handleCreateFlashcard: handleCreateFlashcard,
     // handleEditFlashcard: handleEditFlashcard,
     // handleDeleteFlashcard: handleDeleteFlashcard,
     // handleSaveVocabularyToFlashcard: handleSaveVocabularyToFlashcard,

@@ -55,6 +55,36 @@ const getAllFlashcard = async (userId, page) => {
     });
 };
 
+let createFlashcard = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (data.flashcardName === '') {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Plz enter your title!'
+                });
+            } else {
+                const newFlashcard = await db.Flashcard.create({
+                    userId: data.userId,
+                    flashcardName: data.flashcardName,
+                    description: data.description,
+                    amount: 0,
+                    isResetReview: false,
+                    countVocabularyViewed: 0,
+                    countUserViewed: 0
+                });
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'ok',
+                    flashcards: newFlashcard
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    });
+}
 
 // const saveVocabularyToFlashcard = async (flashcardId, vocabularyData) => {
 //     return new Promise(async (resolve, reject) => {
@@ -97,39 +127,7 @@ const getAllFlashcard = async (userId, page) => {
 //     });
 // };
 
-// let createFlashcard = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             // Kiểm tra xem tiêu đề có được nhập không
-//             if (data.flashcardName === '') {
-//                 resolve({
-//                     errCode: 1,
-//                     errMessage: 'Plz enter your title!'
-//                 });
-//             } else {
-//                 // Tạo flashcard mới trong cơ sở dữ liệu
-//                 const newFlashcard = await db.Flashcard.create({
-//                     userId: data.userId,
-//                     flashcardName: data.flashcardName,
-//                     description: data.description,
-//                     amount: data.amount,
-//                     isResetReview: data.isResetReview,
-//                     countVocabularyViewed: data.countVocabularyViewed,
-//                     countUserViewed: data.countUserViewed
-//                 });
 
-//                 // Trả về thông tin flashcard mới cùng với mã thành công
-//                 resolve({
-//                     errCode: 0,
-//                     errMessage: 'ok',
-//                     data: newFlashcard // Trả về dữ liệu flashcard mới
-//                 });
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     });
-// }
 
 // let updateFlashcard = (data) => {
 //     return new Promise(async (resolve, reject) => {
@@ -298,7 +296,7 @@ let saveVocabulary = (data) => {
 
 module.exports = {
     getAllFlashcard: getAllFlashcard,
-    // createFlashcard: createFlashcard,
+    createFlashcard: createFlashcard,
     // updateFlashcard: updateFlashcard,
     // deleteFlashcard: deleteFlashcard,
     // saveVocabularyToFlashcard: saveVocabularyToFlashcard,
