@@ -86,6 +86,7 @@ let createFlashcard = (data) => {
     });
 }
 
+// hàm chính lưu vocab vào flashcard bên search word
 let saveVocabFlashcard = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -93,6 +94,7 @@ let saveVocabFlashcard = (data) => {
             if (saveVocab.errCode === 0) {
                 let saveVocab_Flashcard = await saveVocabFlash(saveVocab.id, data);
                 if (saveVocab_Flashcard.errCode === 0) {
+                    await updateAmountOfFlashcard(data.flashcardId);
                     resolve({ errCode: 0, message: 'Vocabulary saved to flashcard successfully.' });
                 } else {
                     resolve({ errCode: 1, message: 'Failed to save vocabulary to flashcard.' });
@@ -227,12 +229,48 @@ const getAllVocabInFlashcardPagination = async (flashcardId, page) => {
     }
 };
 
+// cập nhật amount cho flashcard
+let updateAmountOfFlashcard = (flashcardId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!flashcardId) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let flashcard = await db.Flashcard.findOne({
+                where: { id: flashcardId },
+                // raw: false
+            })
+            if (flashcard) {
+                flashcard.amount = flashcard.amount + 1,
+                    await flashcard.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Update the amount flashcard succeeds!'
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: `Error update amount flashcard`
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     getAllFlashcard: getAllFlashcard,
     getAllFlashcardPagination: getAllFlashcardPagination,
     createFlashcard: createFlashcard,
     saveVocabFlashcard: saveVocabFlashcard,
     getAllVocabInFlashcardPagination: getAllVocabInFlashcardPagination,
+    updateAmountOfFlashcard: updateAmountOfFlashcard,
     // updateFlashcard: updateFlashcard,
     // deleteFlashcard: deleteFlashcard,
     // saveVocabulary: saveVocabulary,
