@@ -229,6 +229,36 @@ const getAllVocabInFlashcardPagination = async (flashcardId, page) => {
     }
 };
 
+const getAllVocabInFlashcard = async (flashcardId) => {
+    try {
+        const vocabData = await db.Vocabulary.findAll({
+            include: [
+                {
+                    model: db.Flashcard_Vocabulary,
+                    as: 'FV_VocabularyData',
+                    where: { flashcardId },
+                    attributes: []
+                }
+            ],
+            attributes: ['id', 'word', 'definition', 'partOfSpeech', 'exampleSentence', 'pronunciation', 'createdAt'],
+            order: [['createdAt', 'DESC']],
+            raw: true
+        });
+
+        return {
+            errCode: 0,
+            flashcard: vocabData
+        };
+
+    } catch (error) {
+        console.error('Error fetching vocabulary for flashcard:', error);
+        return {
+            errCode: 1,
+            errMessage: 'Lỗi hệ thống',
+        };
+    }
+};
+
 // cập nhật amount cho flashcard
 let updateAmountOfFlashcard = (flashcardId) => {
     return new Promise(async (resolve, reject) => {
@@ -271,6 +301,7 @@ module.exports = {
     saveVocabFlashcard: saveVocabFlashcard,
     getAllVocabInFlashcardPagination: getAllVocabInFlashcardPagination,
     updateAmountOfFlashcard: updateAmountOfFlashcard,
+    getAllVocabInFlashcard: getAllVocabInFlashcard
     // updateFlashcard: updateFlashcard,
     // deleteFlashcard: deleteFlashcard,
     // saveVocabulary: saveVocabulary,

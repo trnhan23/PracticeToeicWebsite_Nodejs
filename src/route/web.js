@@ -83,6 +83,7 @@ let initWebRoutes = (app) => {
 
     router.post('/api/save-vocab-flashcard', flashcardController.handleSaveVocabOnFlashcard);
     router.get('/api/get-vocab-in-flashcard-pagination', flashcardController.handleGetVocabInFlashcardPagination);
+    router.get('/api/get-vocab-in-flashcard', flashcardController.handleGetVocabInFlashcard);
     //router.delete('/api/delete-vocab-flashcard', flashcardController.handleDeleteVocabFromFlashcard);
 
     return app.use("/", router);
