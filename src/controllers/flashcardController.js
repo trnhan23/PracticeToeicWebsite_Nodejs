@@ -1,7 +1,7 @@
 import flashcardService from '../services/flashcardService';
 
 let handleGetAllFlashcard = async (req, res) => {
-    const { userId} = req.query;
+    const { userId } = req.query;
 
     if (!userId) {
         return res.status(400).json({
@@ -20,7 +20,7 @@ let handleGetAllFlashcard = async (req, res) => {
 };
 
 let handleGetAllFlashcardPagination = async (req, res) => {
-    const { userId, page} = req.query;
+    const { userId, page } = req.query;
 
     if (!userId) {
         return res.status(400).json({
@@ -97,15 +97,30 @@ let handleSaveVocabOnFlashcard = async (req, res) => {
     }
 }
 
+let handleGetVocabInFlashcardPagination = async (req, res) => {
+    const { flashcardId, page } = req.query;
+
+    if (!flashcardId || !page) {
+        return res.status(400).json({
+            errCode: 1,
+            errMessage: "Missing flashcardId",
+            flashcards: [],
+        });
+    }
+    let message = await flashcardService.getAllVocabInFlashcardPagination(flashcardId, page);
+    return res.status(200).json(message);
+}
+
 
 module.exports = {
     handleGetAllFlashcard: handleGetAllFlashcard,
     handleGetAllFlashcardPagination: handleGetAllFlashcardPagination,
     handleCreateFlashcard: handleCreateFlashcard,
+    handleSaveVocabOnFlashcard: handleSaveVocabOnFlashcard,
+    handleGetVocabInFlashcardPagination: handleGetVocabInFlashcardPagination,
     // handleEditFlashcard: handleEditFlashcard,
     // handleDeleteFlashcard: handleDeleteFlashcard,
     // handleSaveVocabularyToFlashcard: handleSaveVocabularyToFlashcard,
-    handleSaveVocabOnFlashcard: handleSaveVocabOnFlashcard,
     // handleDeleteVocabFromFlashcard: handleDeleteVocabFromFlashcard,
 
 }

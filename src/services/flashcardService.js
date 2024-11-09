@@ -1,6 +1,6 @@
 import db from '../models/index';
 
-const getAllFlashcard = async (userId) => {
+const getAllFlashcard = (userId) => {
     return new Promise(async (resolve, reject) => {
         try {
             const flashcards = await db.Flashcard.findAll({
@@ -85,140 +85,6 @@ let createFlashcard = (data) => {
         }
     });
 }
-
-// const saveVocabularyToFlashcard = async (flashcardId, vocabularyData) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             let flashcard = await db.Flashcard.findOne({ where: { id: flashcardId } });
-//             if (!flashcard) {
-//                 return resolve({ errCode: 1, errMessage: "Flashcard không tồn tại" });
-//             }
-
-//             const [vocabulary, created] = await db.Vocabulary.findOrCreate({
-//                 where: { word: vocabularyData.word },
-//                 defaults: {
-//                     definition: vocabularyData.definition,
-//                     partOfSpeech: vocabularyData.partOfSpeech,
-//                     exampleSentence: vocabularyData.exampleSentence,
-//                     pronunciation: vocabularyData.pronunciation,
-//                     image: vocabularyData.image,
-//                     audioFileUK: vocabularyData.audioFileUK,
-//                     audioFileUS: vocabularyData.audioFileUS,
-//                 }
-//             });
-
-//             // Sử dụng đúng tên trường flashcardId và vocabularyId
-//             await db.Flashcard_Vocabulary.create({
-//                 flashcardId: flashcardId,
-//                 vocabularyId: vocabulary.id, // Đảm bảo sử dụng vocabulary.id
-//             });
-
-//             resolve({
-//                 errCode: 0,
-//                 errMessage: 'Đã lưu từ vào flashcard thành công',
-//             });
-//         } catch (error) {
-//             console.error('Lỗi khi lưu từ vào flashcard:', error);
-//             reject({
-//                 errCode: 1,
-//                 errMessage: 'Lỗi hệ thống',
-//             });
-//         }
-//     });
-// };
-
-
-
-// let updateFlashcard = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!data.id) {
-//                 resolve({
-//                     errCode: 2,
-//                     errMessage: 'Missing required parameters'
-//                 });
-//             }
-
-//             let flashcard = await db.Flashcard.findOne({
-//                 where: { id: data.id },
-//                 // raw: false
-//             })
-//             console.log("Check flashcard: ", flashcard);
-//             if (flashcard) {
-//                 flashcard.userId = data.userId,
-//                     flashcard.flashcardName = data.flashcardName,
-//                     await flashcard.save();
-
-//                 resolve({
-//                     errCode: 0,
-//                     errMessage: 'Update the flashcard succeeds!'
-//                 });
-//             } else {
-//                 resolve({
-//                     errCode: 1,
-//                     errMessage: 'Flashcard not not found'
-//                 });
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     })
-// }
-
-// let deleteFlashcard = (flashcardId) => {
-//     return new Promise(async (resolve, reject) => {
-//         let flashcard = await db.Flashcard.findOne({
-//             where: { id: flashcardId }
-//         })
-//         if (!flashcard) {
-//             resolve({
-//                 errCode: 2,
-//                 errMessage: 'Flashcard is not exist'
-//             })
-//         }
-//         await db.Flashcard.destroy({
-//             where: { id: flashcardId }
-//         })
-//         resolve({
-//             errCode: 0,
-//             errMessage: 'Flashcard is delete'
-//         })
-//     })
-// }
-
-// let deleteVocabFromFlashcard = (data) => {
-//     return new Promise(async (resolve, reject) => {
-//         try {
-//             if (!data.flashcardId || !data.vocabularyId) {
-//                 resolve({
-//                     errCode: 1,
-//                     errMessage: 'Missing required parameters!',
-//                 });
-//             } else {
-//                 const result = await db.Flashcard_Vocabulary.destroy({
-//                     where: {
-//                         flashcardId: data.flashcardId,
-//                         vocabularyId: data.vocabularyId,
-//                     },
-//                 });
-
-//                 if (result) {
-//                     resolve({
-//                         errCode: 0,
-//                         message: 'Vocabulary removed from flashcard successfully.',
-//                     });
-//                 } else {
-//                     resolve({
-//                         errCode: 2,
-//                         message: 'Failed to remove vocabulary from flashcard.',
-//                     });
-//                 }
-//             }
-//         } catch (e) {
-//             reject(e);
-//         }
-//     });
-// }
 
 let saveVocabFlashcard = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -306,15 +172,69 @@ let saveVocabulary = (data) => {
     });
 };
 
+// lấy vocab theo flashcard theo pagination
+const getAllVocabInFlashcardPagination = async (flashcardId, page) => {
+    try {
+        const limit = 8;
+        const offset = (page - 1) * limit;
+
+        const flashcard = await db.Flashcard.findOne({
+            where: { id: flashcardId },
+            attributes: ['id', 'userId', 'flashcardName', 'description', 'amount', 'createdAt'],
+            raw: true
+        });
+
+        if (!flashcard) {
+            return {
+                errCode: 1,
+                errMessage: 'Flashcard not found',
+            };
+        }
+
+        const vocabData = await db.Vocabulary.findAndCountAll({
+            include: [
+                {
+                    model: db.Flashcard_Vocabulary,
+                    as: 'FV_VocabularyData',
+                    where: { flashcardId },
+                    attributes: []
+                }
+            ],
+            attributes: ['id', 'word', 'definition', 'partOfSpeech', 'exampleSentence', 'pronunciation', 'createdAt'],
+            limit,
+            offset,
+            order: [['createdAt', 'DESC']],
+            raw: true
+        });
+
+        const flashcardWithVocab = {
+            ...flashcard,
+            vocabularies: vocabData.rows
+        };
+
+        return {
+            errCode: 0,
+            flashcard: flashcardWithVocab,
+            totalCount: vocabData.count
+        };
+
+    } catch (error) {
+        console.error('Error fetching vocabulary for flashcard:', error);
+        return {
+            errCode: 1,
+            errMessage: 'Lỗi hệ thống',
+        };
+    }
+};
 
 module.exports = {
     getAllFlashcard: getAllFlashcard,
     getAllFlashcardPagination: getAllFlashcardPagination,
     createFlashcard: createFlashcard,
+    saveVocabFlashcard: saveVocabFlashcard,
+    getAllVocabInFlashcardPagination: getAllVocabInFlashcardPagination,
     // updateFlashcard: updateFlashcard,
     // deleteFlashcard: deleteFlashcard,
-    // saveVocabularyToFlashcard: saveVocabularyToFlashcard,
-    saveVocabFlashcard: saveVocabFlashcard,
     // saveVocabulary: saveVocabulary,
     // saveVocabFlash: saveVocabFlash,
     // deleteVocabFromFlashcard: deleteVocabFromFlashcard,
