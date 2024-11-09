@@ -231,6 +231,18 @@ const getAllVocabInFlashcardPagination = async (flashcardId, page) => {
 
 const getAllVocabInFlashcard = async (flashcardId) => {
     try {
+        const flashcard = await db.Flashcard.findOne({
+            where: { id: flashcardId },
+            attributes: ['id', 'userId', 'flashcardName', 'description', 'amount', 'createdAt'],
+            raw: true
+        });
+
+        if (!flashcard) {
+            return {
+                errCode: 1,
+                errMessage: 'Flashcard not found',
+            };
+        }
         const vocabData = await db.Vocabulary.findAll({
             include: [
                 {
@@ -245,9 +257,14 @@ const getAllVocabInFlashcard = async (flashcardId) => {
             raw: true
         });
 
+        const flashcardWithVocab = {
+            ...flashcard,
+            vocabularies: vocabData
+        };
+
         return {
             errCode: 0,
-            flashcard: vocabData
+            flashcard: flashcardWithVocab
         };
 
     } catch (error) {
