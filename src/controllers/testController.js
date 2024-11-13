@@ -74,11 +74,26 @@ let handleGetDetailTestResult = async (req, res) => {
     return res.status(200).json(tests);
 }
 
+let handleGetTitleExam = async (req, res) => {
+    let testId = req.query.testId;
+    if (!testId) {
+        return res.status(200).json({
+            errCode: 1,
+            errMessage: "Missing required parameters",
+            tests: []
+        })
+    }
+
+    let tests = await testService.getTitleExam(testId);
+    return res.status(200).json(tests);
+}
+
 module.exports = {
     handleSaveTestResult: handleSaveTestResult,
     handleGetTestResult: handleGetTestResult,
     handleUpdateCountUserTest: handleUpdateCountUserTest,
     handleGetDetailTestResult: handleGetDetailTestResult,
     handleGetAllTestResult: handleGetAllTestResult,
+    handleGetTitleExam: handleGetTitleExam,
 
 }

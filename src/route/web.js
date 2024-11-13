@@ -71,6 +71,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-all-test-result', testController.handleGetAllTestResult);
     router.get('/api/get-detail-test-result', testController.handleGetDetailTestResult);
     router.post('/api/save-test-result', testController.handleSaveTestResult);
+    router.get('/api/get-title-exam', testController.handleGetTitleExam);
     
     // update countUserTest
     router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);

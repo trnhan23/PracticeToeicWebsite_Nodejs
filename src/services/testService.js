@@ -504,6 +504,33 @@ let bulkCreateTestResult = (testId, data) => {
     })
 }
 
+let getTitleExam = (testId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const tests = await db.Test.findAll({
+                where: {
+                    id: testId
+                },
+                attributes: ['id', 'examId', 'userId'],
+                include: [
+                    {
+                        model: db.Exam,
+                        as: 'Test_ExamData',
+                        attributes: ['titleExam'],
+                    }
+                ],
+                order: [['createdAt', 'DESC']],
+            })
+            resolve({
+                errCode: 0,
+                tests
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     saveTestResult: saveTestResult,
     createTest: createTest,
@@ -520,5 +547,6 @@ module.exports = {
     getSortedParts: getSortedParts,
     getScore: getScore,
     getAllTestResult: getAllTestResult,
+    getTitleExam: getTitleExam,
 
 }
