@@ -68,6 +68,7 @@ let initWebRoutes = (app) => {
 
     // test - test result
     router.get('/api/get-test-result', testController.handleGetTestResult);
+    router.get('/api/get-all-test-result', testController.handleGetAllTestResult);
     router.get('/api/get-detail-test-result', testController.handleGetDetailTestResult);
     router.post('/api/save-test-result', testController.handleSaveTestResult);
     

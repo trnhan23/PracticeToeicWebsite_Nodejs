@@ -122,6 +122,53 @@ let getTestResult = (examId, userId) => {
     })
 }
 
+// hàm lấy tất cả các test của người dùng theo eamId và userId
+let getAllTestResult = (userId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const tests = await db.Test.findAll({
+                where: {
+                    userId: userId
+                },
+                include: [
+                    {
+                        model: db.Test_Result,
+                        as: 'TestResult_TestData',
+                        attributes: ['id'],
+                        include: [
+                            {
+                                model: db.Question_And_Answer,
+                                as: 'TestResult_QuestionData',
+                                attributes: ['id'],
+                                include: [
+                                    {
+                                        model: db.RL_And_QA,
+                                        as: 'RLQA_QuestionAndAnswerData',
+                                        attributes: ['id'],
+                                        include: [
+                                            {
+                                                model: db.Reading_And_Listening,
+                                                as: 'RLQA_ReadAndListenData',
+                                                attributes: ['id', 'questionType']
+                                            }
+                                        ],
+
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                order: [['createdAt', 'DESC']],
+            })
+
+            resolve(tests)
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 // lưu kết quả làm bài
 let saveTestResult = (data) => {
     return new Promise(async (resolve, reject) => {
@@ -472,5 +519,6 @@ module.exports = {
     getDetailTestResult: getDetailTestResult,
     getSortedParts: getSortedParts,
     getScore: getScore,
+    getAllTestResult: getAllTestResult,
 
 }
