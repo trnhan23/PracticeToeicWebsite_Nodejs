@@ -1,4 +1,5 @@
-import express from "express"
+import express from "express";
+import upload from '../config/multerConfig';
 import homeController from '../controllers/homeController';
 import userController from '../controllers/userController';
 import vocabularyController from '../controllers/vocabularyController';
@@ -8,7 +9,7 @@ import questionAndAnswer from '../controllers/questionAndAnswerController';
 import cmtController from '../controllers/commentComtroller';
 import testController from '../controllers/testController';
 import flashcardController from '../controllers/flashcardController';
-
+import uploadController from '../controllers/uploadController';
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -16,6 +17,9 @@ let initWebRoutes = (app) => {
 
     //allcode
     router.get('/api/allcode', userController.getAllCode);
+
+    //upload file (image, mp3) to cloud
+    router.post('/api/upload', upload.single('file'), uploadController.handleUploadFileToCloud);
 
     //login
     router.post('/api/login', userController.handleLogin);
