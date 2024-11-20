@@ -531,6 +531,34 @@ let getTitleExam = (testId) => {
     })
 }
 
+let getInfoStatistic = (userId, type) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            
+            const tests = await db.Test.findAll({
+                where: {
+                    userId: userId,
+                },
+                //attributes: ['id', 'examId', 'userId'],
+                include: [
+                    {
+                        model: db.Exam,
+                        as: 'Test_ExamData',
+                        attributes: ['titleExam'],
+                    }
+                ],
+                order: [['createdAt', 'DESC']],
+            })
+            resolve({
+                errCode: 0,
+                tests
+            })
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
 module.exports = {
     saveTestResult: saveTestResult,
     createTest: createTest,
@@ -548,5 +576,6 @@ module.exports = {
     getScore: getScore,
     getAllTestResult: getAllTestResult,
     getTitleExam: getTitleExam,
+    getInfoStatistic: getInfoStatistic,
 
 }

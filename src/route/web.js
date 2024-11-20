@@ -76,6 +76,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-detail-test-result', testController.handleGetDetailTestResult);
     router.post('/api/save-test-result', testController.handleSaveTestResult);
     router.get('/api/get-title-exam', testController.handleGetTitleExam);
+
+    router.get('/api/get-info-statistic', testController.handleGetInfoStatistic);
     
     // update countUserTest
     router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);
@@ -91,6 +93,10 @@ let initWebRoutes = (app) => {
     router.get('/api/get-vocab-in-flashcard-pagination', flashcardController.handleGetVocabInFlashcardPagination);
     router.get('/api/get-vocab-in-flashcard', flashcardController.handleGetVocabInFlashcard);
     //router.delete('/api/delete-vocab-flashcard', flashcardController.handleDeleteVocabFromFlashcard);
+
+
+
+
 
     return app.use("/", router);
 }
