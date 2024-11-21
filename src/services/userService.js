@@ -107,7 +107,7 @@ let createUser = (data) => {
                     errMessage: 'Your email is already in used. Plz try another email!'
                 })
             } else {
-                await emailService.sendSimpleEmail(data.email);
+                // await emailService.sendSimpleEmail(data.email);
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 await db.User.create({
                     password: hashPasswordFromBcrypt,
