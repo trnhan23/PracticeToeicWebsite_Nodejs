@@ -29,6 +29,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-user', userController.handleCreateUser);
     router.put('/api/edit-user', userController.handleEditUser);
     router.delete('/api/delete-user', userController.handleDeleteUser);
+    router.post('/api/verify-account-user', userController.handleVerifyAccountUser);
 
     //search vocabulary
     router.get('/api/search-vocabulary', vocabularyController.getSearchVocabulary);

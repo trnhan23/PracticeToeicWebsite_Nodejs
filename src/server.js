@@ -96,8 +96,9 @@ app.get('/auth/google/callback', passport.authenticate('google', { session: fals
         id: req.user.id,
         email: req.user.email,
         fullName: req.user.fullName,
-        avatar: req.user.avatar,
-        roleId: req.user.roleId,
+        avatar: 'https://i.pravatar.cc/300?img=2',
+        roleId: 'R2',
+        status: true,
     };
 
     res.send(
@@ -119,7 +120,7 @@ app.post('/api/google-login', async (req, res) => {
         });
 
         const payload = ticket.getPayload();
-        const { sub, email, name, picture } = payload;
+        const { sub, email, name } = payload;
 
         let user = await db.User.findOne({ where: { email } });
 
@@ -130,9 +131,10 @@ app.post('/api/google-login', async (req, res) => {
                 email,
                 fullName: name,
                 password: hashedPassword,
-                avatar: picture,
+                avatar: 'https://i.pravatar.cc/300?img=2',
                 registrationDate: new Date(),
-                roleId: 'user',
+                roleId: 'R2',
+                status: true,
             });
 
             console.log(`Tạo user mới: ${name} (${email})`);
@@ -163,9 +165,8 @@ passport.use(new FacebookStrategy({
     callbackURL: `${process.env.NODE_URL}/auth/facebook/callback`,
     profileFields: ['id', 'displayName', 'photos', 'email']
 }, async (accessToken, refreshToken, profile, done) => {
-    const { id, displayName, emails, photos } = profile;
+    const { id, displayName, emails } = profile;
     const email = emails[0].value;
-    const avatar = photos[0].value;
 
     try {
         let user = await db.User.findOne({ where: { email } });
@@ -175,9 +176,9 @@ passport.use(new FacebookStrategy({
                 email,
                 fullName: displayName,
                 password: hashedPassword,
-                avatar: avatar,
+                avatar: 'https://i.pravatar.cc/300?img=2',
                 registrationDate: new Date(),
-                roleId: 'R1',
+                roleId: 'R2',
             });
             console.log(`Tạo user mới: ${displayName} (${email})`);
         } else {

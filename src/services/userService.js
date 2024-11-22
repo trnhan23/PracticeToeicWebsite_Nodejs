@@ -2,6 +2,7 @@ import db from '../models/index'
 import bcrypt from 'bcryptjs';
 import emailService from './emailService';
 const salt = bcrypt.genSaltSync(10);
+import { v4 as uuidv4 } from 'uuid';
 
 let hashUserPassword = (pass) => {
     return new Promise(async (resolve, reject) => {
@@ -96,18 +97,25 @@ let getAllUsers = (userId) => {
     })
 }
 
+let buildUrlEmail = (email, token) => {
+    let result = '';
+    result = `${process.env.REACT_URL}/verify?token=${token}&email=${email}`
+    return result;
+}
+
 let createUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
+            let id = uuidv4();
+            let result = buildUrlEmail(data.email, id);
             let checkEmail = await checkUserEmail(data.email);
-
             if (checkEmail === true) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Your email is already in used. Plz try another email!'
                 })
             } else {
-                // await emailService.sendSimpleEmail(data.email);
+                await emailService.sendSimpleEmail(data.email, result);
                 let hashPasswordFromBcrypt = await hashUserPassword(data.password);
                 await db.User.create({
                     password: hashPasswordFromBcrypt,
@@ -119,6 +127,8 @@ let createUser = (data) => {
                     bio: data.bio,
                     registrationDate: new Date().toISOString(),
                     roleId: data.roleId,
+                    status: false,
+                    token: id,
                 })
                 resolve({
                     errCode: 0,
@@ -192,17 +202,53 @@ let getAllCodeService = (typeInput) => {
     return new Promise(async (resolve, reject) => {
         try {
             let res = {};
-            if(!typeInput) {
+            if (!typeInput) {
                 res.errCode = 1;
                 res.data = "Missing required parameter";
             } else {
                 let allcode = await db.AllCode.findAll({
-                    where: {type: typeInput}
+                    where: { type: typeInput }
                 });
                 res.errCode = 0;
                 res.data = allcode;
             }
             resolve(res);
+        } catch (e) {
+            reject(e);
+        }
+    })
+}
+
+let verifyAccountUser = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.token || !data.email) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter"
+                })
+            } else {
+                let user = await db.User.findOne({
+                    where: {
+                        token: data.token,
+                        email: data.email
+                    },
+                    raw: false
+                })
+                if (user) {
+                    user.status = true;
+                    await user.save();
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'Active account user success!'
+                    });
+                } else {
+                    resolve({
+                        errCode: 1,
+                        errMessage: `Usern't not found`
+                    });
+                }
+            }
         } catch (e) {
             reject(e);
         }
@@ -216,5 +262,6 @@ module.exports = {
     updateUser: updateUser,
     deleteUser: deleteUser,
     getAllCodeService: getAllCodeService,
+    verifyAccountUser: verifyAccountUser,
 
 }
