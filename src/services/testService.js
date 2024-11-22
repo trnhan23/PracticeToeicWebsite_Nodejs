@@ -6,41 +6,57 @@ let getDetailTestResult = (testId) => {
             if (!testId) {
                 resolve({
                     errCode: 2,
-                    errMessage: 'Missing required parameters'
+                    errMessage: 'Missing required parameters',
                 });
             }
 
             let test = await db.Test.findOne({
                 where: { id: testId },
-            })
+            });
+
+            if (!test) {
+                resolve({
+                    errCode: 1,
+                    errMessage: 'Test not found',
+                });
+            }
+
             let part = formatCountByPart(await countQuestionByPart(testId));
             let parts = getSortedParts(part);
-            let scoreListen = await getScore(test.countListenAnswer);
-            let scoreRead = await getScore(test.countReadAnswer);
+            let listenAnswerCount = test.countListenAnswer || 0;
+            let readAnswerCount = test.countReadAnswer || 0;
+
+            let scoreListen = await getScore(listenAnswerCount) || { listenScore: 0 };
+            let scoreRead = await getScore(readAnswerCount) || { readingScore: 0 };
+
+            let listenScore = scoreListen.listenScore || 0;
+            let readingScore = scoreRead.readingScore || 0;
+
+            let totalScore = listenScore + readingScore;
+
             resolve({
                 errCode: 0,
                 errMessage: 'ok',
-                tests: ({
+                tests: {
                     testId: test.id,
                     correctAnswer: test.correctAnswer || 0,
                     incorrectAnswer: test.totalQuestion - (test.correctAnswer + test.skipAnswer),
                     skipAnswer: test.skipAnswer || 0,
-                    countListenAnswer: test.countListenAnswer || 0,
-                    countReadAnswer: test.countReadAnswer || 0,
-                    listenScore: scoreListen.listenScore || 0,
-                    readingScore: scoreRead.readingScore || 0,
+                    countListenAnswer: listenAnswerCount,
+                    countReadAnswer: readAnswerCount,
+                    listenScore: listenScore,
+                    readingScore: readingScore,
                     totalQuestion: test.totalQuestion || 0,
-                    score: scoreListen.listenScore || 0 + scoreRead.readingScore || 0,
+                    score: totalScore,
                     testTime: test.testTime,
                     parts,
-                }),
-
+                },
             });
         } catch (e) {
             reject(e);
         }
-    })
-}
+    });
+};
 
 // lấy điểm
 let getScore = (score) => {
@@ -74,7 +90,7 @@ let getSortedParts = (part) => {
     });
 }
 
-// hàm lấy tất cả các test của người dùng theo eamId và userId
+// hàm lấy tất cả các test của người dùng theo examId và userId
 let getTestResult = (examId, userId) => {
     return new Promise(async (resolve, reject) => {
         try {
@@ -176,13 +192,14 @@ let saveTestResult = (data) => {
             // tạo test
             let test = await createTest(data.test);
             // tạo 1 loạt test result
+            console.log("Kiểm tra data: ", data);
             let testResult = await bulkCreateTestResult(test.testId, data.result.questions);
+            
             // tính toán số câu làm đúng, sai, tổng
             let cal = await calculateCorrectAnswer(testResult);
-            // đếm câu theo Part
-            let count = await countQuestionByPart(test.testId);
-            let format = await formatCountByPart(count);
-            let calTotal = await calculateTotals(format);
+
+            // tính tổng số câu theo phần listen and red
+            let calTotal = await calculateTotals(data.result.correctCounts);
             // cập nhật +1 countUserTest
             await updateCountUserTest(data.test.examId);
             // cập nhật statusExam trong User_Exam
