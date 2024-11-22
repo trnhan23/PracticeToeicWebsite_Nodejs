@@ -97,7 +97,7 @@ let handleGetInfoStatistic = async (req, res) => {
         })
     }
     let info = await testService.getInfoStatistic(userId, type);
-        return res.status(200).json({info});
+        return res.status(200).json(info);
 }
 
 module.exports = {
