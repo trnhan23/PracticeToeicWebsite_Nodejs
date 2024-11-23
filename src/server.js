@@ -62,9 +62,12 @@ passport.use(new GoogleStrategy({
                 email,
                 fullName: displayName,
                 password: hashedPassword,
-                avatar: avatar,
+                avatar: 'https://i.pravatar.cc/300?img=2',
                 registrationDate: new Date(),
-                roleId: 'user',
+                roleId: 'R2',
+                status: true,
+                gender: true,
+                bio: '',
             });
 
             console.log(`Tạo user mới: ${displayName} (${email})`);
@@ -99,6 +102,8 @@ app.get('/auth/google/callback', passport.authenticate('google', { session: fals
         avatar: 'https://i.pravatar.cc/300?img=2',
         roleId: 'R2',
         status: true,
+        gender: true,
+        bio: '',
     };
 
     res.send(
@@ -135,6 +140,8 @@ app.post('/api/google-login', async (req, res) => {
                 registrationDate: new Date(),
                 roleId: 'R2',
                 status: true,
+                gender: true,
+                bio: '',
             });
 
             console.log(`Tạo user mới: ${name} (${email})`);
@@ -179,6 +186,9 @@ passport.use(new FacebookStrategy({
                 avatar: 'https://i.pravatar.cc/300?img=2',
                 registrationDate: new Date(),
                 roleId: 'R2',
+                status: true,
+                gender: true,
+                bio: '',
             });
             console.log(`Tạo user mới: ${displayName} (${email})`);
         } else {
