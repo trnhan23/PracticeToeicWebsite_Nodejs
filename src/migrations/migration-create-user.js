@@ -31,6 +31,9 @@ module.exports = {
       bio: {
         type: Sequelize.STRING
       },
+      OTP: {
+        type: Sequelize.STRING
+      },
       registrationDate: {
         type: Sequelize.DATE
       },

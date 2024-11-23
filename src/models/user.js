@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     registrationDate: DataTypes.DATE,
     roleId: DataTypes.STRING,
     status: DataTypes.BOOLEAN,
+    OTP: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'User',

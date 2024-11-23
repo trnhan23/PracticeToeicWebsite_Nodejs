@@ -91,7 +91,8 @@ let handleSendCode = async (req, res) => {
 
 let handleCheckSendCode = async (req, res) => {
     let data = req.body;
-    return res.status(200).json(data);
+    let message = await userService.checkSendEmail(data);
+    return res.status(200).json(message);
 }
 
 module.exports = {

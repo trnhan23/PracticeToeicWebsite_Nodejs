@@ -277,16 +277,111 @@ let sendCode = (data) => {
                         errMessage: 'Email không tồn tại!'
                     })
                 } else {
+                    // gửi mã otp qua email
                     await emailService.sendVerificationEmail(data.email, code);
-                    resolve({
-                        errCode: 0,
-                        errMessage: "ok",
-                    });
+                    // cập nhật mã OTP
+                    let user = await db.User.findOne({
+                        where: { email: data.email },
+                        raw: false
+                    })
+                    if (user) {
+                        user.OTP = code;
+                        await user.save();
+                        resolve({
+                            errCode: 0,
+                            errMessage: "ok",
+                        });
+                    } else {
+                        resolve({
+                            errCode: 1,
+                            errMessage: `Lỗi cập nhật OTP`
+                        });
+                    }
                 }
             }
         } catch (e) {
             console.error("Error in sendCode:", e);
             reject({
+                errCode: -1,
+                errMessage: "Internal server error",
+            });
+        }
+    });
+};
+
+let checkOTP = (email, otpUser) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let user = await db.User.findOne({
+                where: { email },
+                raw: false
+            })
+
+            if (user.OTP === otpUser) {
+                resolve({
+                    errCode: 0
+                })
+            } else {
+                resolve({
+                    errCode: 1,
+                });
+            }
+        } catch(e) {
+            reject({
+                errCode: -1,
+            });
+        }
+    })
+}
+
+let checkSendEmail = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.email || !data.otp || !data.password) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter",
+                });
+            } else {
+                let checkEmail = await checkUserEmail(data.email);
+                if (checkEmail === false) {
+                    return resolve({
+                        errCode: 1,
+                        errMessage: 'Email không tồn tại!'
+                    });
+                } else {
+                    let resOTP = await checkOTP(data.email, data.otp);
+                    if (resOTP.errCode === 0) {
+                        let hashPasswordFromBcrypt = await hashUserPassword(data.password);
+                        
+                        let user = await db.User.findOne({
+                            where: { email: data.email },
+                            raw: false
+                        });
+                        if (user) {
+                            user.password = hashPasswordFromBcrypt;
+                            await user.save();
+                            return resolve({
+                                errCode: 0,
+                                errMessage: "ok",
+                            });
+                        } else {
+                            return resolve({
+                                errCode: 1,
+                                errMessage: `Người dùng không tồn tại`
+                            });
+                        }
+                    } else {
+                        return resolve({
+                            errCode: 1,
+                            errMessage: `OTP không tồn tại`
+                        });
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Error in sendCode:", e);
+            return reject({
                 errCode: -1,
                 errMessage: "Internal server error",
             });
@@ -304,5 +399,6 @@ module.exports = {
     getAllCodeService: getAllCodeService,
     verifyAccountUser: verifyAccountUser,
     sendCode: sendCode,
+    checkSendEmail: checkSendEmail,
 
 }
