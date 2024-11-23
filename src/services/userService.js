@@ -39,30 +39,35 @@ let handleUserLogin = (email, password) => {
             let isExist = await checkUserEmail(email);
             if (isExist) {
                 let user = await db.User.findOne({
-                    attributes: ['id', 'email', 'roleId', 'password', 'fullName', 'avatar'],
+                    attributes: ['id', 'email', 'roleId', 'password', 'fullName', 'avatar', 'status'],
                     where: { email: email },
                     raw: true,
                 });
                 if (user) {
                     let check = await bcrypt.compareSync(password, user.password);
                     if (check) {
-                        userData.errCode = 0;
-                        userData.errMessage = 'ok';
 
-                        delete user.password;
-                        userData.user = user;
+                        if (user.status === 1) {
+                            userData.errCode = 0;
+                            userData.errMessage = 'ok';
 
+                            delete user.password;
+                            userData.user = user;
+                        } else {
+                            userData.errCode = 4;
+                            userData.errMessage = 'Tài khoản chưa kích hoạt';
+                        }
                     } else {
                         userData.errCode = 3;
-                        userData.errMessage = 'Wrong password';
+                        userData.errMessage = 'Sai mật khẩu';
                     }
                 } else {
                     userData.errCode = 2;
-                    userData.errMessage = `User's not found`
+                    userData.errMessage = `Người dùng không tồn tại!`
                 }
             } else {
                 userData.errCode = 1;
-                userData.errMessage = `Your's email isn't exist in your system. Piz try other email`
+                userData.errMessage = `Email không tồn tại. Hãy nhập email khác!`
             }
             resolve(userData);
         } catch (e) {
