@@ -43,6 +43,8 @@ let initWebRoutes = (app) => {
     router.post('/api/create-vocabulary', vocabularyController.handleCreateVocabulary);
     router.put('/api/edit-vocabulary', vocabularyController.handleEditVocabulary);
     router.delete('/api/delete-vocabulary', vocabularyController.handleDeleteVocabulary);
+    router.post('/api/create-vocabulary-in-flashcard', vocabularyController.handleCreateVocabularyInFlashcard);
+
 
     // category exam (danh mục các năm)
     router.get('/api/get-all-category-exam', categoryExamController.handleGetAllCategoryExam);

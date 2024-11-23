@@ -1,4 +1,5 @@
 import db from '../models/index';
+import flashcardService from '../services/flashcardService';
 
 let getAllVocabularies = (vocabId) => {
     return new Promise(async (resolve, reject) => {
@@ -29,14 +30,13 @@ let getAllVocabularies = (vocabId) => {
 let createVocabulary = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            console.log("check word: ", data.word);
             if (data.word === '') {
                 resolve({
                     errCode: 1,
                     errMessage: 'Plz enter your word!'
                 })
             } else {
-                await db.Vocabulary.create({
+                let vocab = await db.Vocabulary.create({
                     word: data.word,
                     definition: data.definition,
                     partOfSpeech: data.partOfSpeech,
@@ -45,7 +45,8 @@ let createVocabulary = (data) => {
                 })
                 resolve({
                     errCode: 0,
-                    errMessage: 'ok'
+                    errMessage: 'ok',
+                    vocabId: vocab.id,
                 })
             }
         } catch (e) {
@@ -113,10 +114,50 @@ let deleteVocabulary = (vocabId) => {
     })
 }
 
+let createVocabularyInFlashcard = (data) => {
+    return new Promise(async (resolve, reject) => {
+        if (data.flashcardId === '') {
+            return resolve({
+                errCode: 1,
+                errMessage: 'Error parameter',
+            });
+        }
+
+        let res = await createVocabulary(data);
+        if (res.errCode !== 0 || !res.vocabId) {
+            return resolve({
+                errCode: 1,
+                errMessage: 'Error parameter',
+            });
+        }
+
+        await db.Flashcard_Vocabulary.create({
+            flashcardId: data.flashcardId,
+            vocabularyId: res.vocabId,
+            isReview: false,
+        });
+
+        let res1 = await flashcardService.updateAmountOfFlashcard(data.flashcardId);
+        if (res1.errCode === 0) {
+            return resolve({
+                errCode: 0,
+                errMessage: 'ok',
+            });
+        } else {
+            return resolve({
+                errCode: 1,
+                errMessage: 'error',
+            });
+        }
+    });
+};
+
+
 module.exports = {
     getAllVocabularies: getAllVocabularies,
     createVocabulary: createVocabulary,
     updateVocabulary: updateVocabulary,
     deleteVocabulary: deleteVocabulary,
+    createVocabularyInFlashcard: createVocabularyInFlashcard,
 
 }

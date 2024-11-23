@@ -69,6 +69,11 @@ let handleDeleteVocabulary = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleCreateVocabularyInFlashcard = async (req, res) => {
+    let message = await vocabService.createVocabularyInFlashcard(req.body);
+    return res.status(200).json(message);
+}
+
 module.exports = {
     getSearchVocabulary: getSearchVocabulary,
     getAudioVocabulary: getAudioVocabulary,
@@ -76,5 +81,6 @@ module.exports = {
     handleCreateVocabulary: handleCreateVocabulary,
     handleEditVocabulary: handleEditVocabulary,
     handleDeleteVocabulary: handleDeleteVocabulary,
+    handleCreateVocabularyInFlashcard: handleCreateVocabularyInFlashcard,
 
 }
