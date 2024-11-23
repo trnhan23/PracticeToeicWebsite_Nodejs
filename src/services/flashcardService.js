@@ -311,6 +311,39 @@ let updateAmountOfFlashcard = (flashcardId) => {
     })
 }
 
+let deleteFlashcard = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let flashcard = await db.Flashcard.findOne({
+                where: {id: data.id},
+            })
+            if (!flashcard) {
+                resolve({
+                    errCode: 2,
+                    errMessage: `Flashcard không tồn tại`
+                })
+            }
+            await db.Flashcard.destroy({
+                where: {id: data.id},
+            })
+
+            await db.Flashcard_Vocabulary.destroy({
+                where: {flashcardId: data.id},
+            })
+
+            resolve({
+                errCode: 0,
+                errMessage: "ok"
+            })
+        } catch(e){
+            reject({
+                errCode: -1,
+                errMessage: e
+            })
+        }
+    })
+}
+
 module.exports = {
     getAllFlashcard: getAllFlashcard,
     getAllFlashcardPagination: getAllFlashcardPagination,
@@ -318,9 +351,9 @@ module.exports = {
     saveVocabFlashcard: saveVocabFlashcard,
     getAllVocabInFlashcardPagination: getAllVocabInFlashcardPagination,
     updateAmountOfFlashcard: updateAmountOfFlashcard,
-    getAllVocabInFlashcard: getAllVocabInFlashcard
+    getAllVocabInFlashcard: getAllVocabInFlashcard,
+    deleteFlashcard: deleteFlashcard,
     // updateFlashcard: updateFlashcard,
-    // deleteFlashcard: deleteFlashcard,
     // saveVocabulary: saveVocabulary,
     // saveVocabFlash: saveVocabFlash,
     // deleteVocabFromFlashcard: deleteVocabFromFlashcard,

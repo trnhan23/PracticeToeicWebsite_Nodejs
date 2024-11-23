@@ -88,8 +88,9 @@ let initWebRoutes = (app) => {
     router.get('/api/get-all-flashcard-pagination', flashcardController.handleGetAllFlashcardPagination);
     router.get('/api/get-all-flashcard', flashcardController.handleGetAllFlashcard);
     router.post('/api/create-flashcard', flashcardController.handleCreateFlashcard);
+    router.delete('/api/delete-flashcard', flashcardController.handleDeleteFlashcard);
+
     //router.put('/api/edit-flashcard', flashcardController.handleEditFlashcard);
-    //router.delete('/api/delete-flashcard', flashcardController.handleDeleteFlashcard);
 
     router.post('/api/save-vocab-flashcard', flashcardController.handleSaveVocabOnFlashcard);
     router.get('/api/get-vocab-in-flashcard-pagination', flashcardController.handleGetVocabInFlashcardPagination);

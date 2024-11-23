@@ -125,6 +125,11 @@ let handleGetVocabInFlashcard = async (req, res) => {
     return res.status(200).json(message);
 }
 
+let handleDeleteFlashcard = async (req, res) => {
+    let message = await flashcardService.deleteFlashcard(req.body);
+    return res.status(200).json(message);
+}
+
 module.exports = {
     handleGetAllFlashcard: handleGetAllFlashcard,
     handleGetAllFlashcardPagination: handleGetAllFlashcardPagination,
@@ -132,8 +137,8 @@ module.exports = {
     handleSaveVocabOnFlashcard: handleSaveVocabOnFlashcard,
     handleGetVocabInFlashcardPagination: handleGetVocabInFlashcardPagination,
     handleGetVocabInFlashcard: handleGetVocabInFlashcard,
+    handleDeleteFlashcard: handleDeleteFlashcard,
     // handleEditFlashcard: handleEditFlashcard,
-    // handleDeleteFlashcard: handleDeleteFlashcard,
     // handleSaveVocabularyToFlashcard: handleSaveVocabularyToFlashcard,
     // handleDeleteVocabFromFlashcard: handleDeleteVocabFromFlashcard,
 
