@@ -129,7 +129,7 @@ let createUser = (data) => {
                     fullName: data.fullName,
                     gender: data.gender === '1' ? true : false,
                     avatar: data.avatar,
-                    bio: data.bio,
+                    bio: data.bio || "",
                     registrationDate: new Date().toISOString(),
                     roleId: data.roleId,
                     status: false,
@@ -260,6 +260,41 @@ let verifyAccountUser = (data) => {
     })
 }
 
+let sendCode = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.email) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing parameter",
+                });
+            } else {
+                const code = Math.floor(10000000 + Math.random() * 90000000);
+                let checkEmail = await checkUserEmail(data.email);
+                if (checkEmail === false) {
+                    resolve({
+                        errCode: 1,
+                        errMessage: 'Email không tồn tại!'
+                    })
+                } else {
+                    await emailService.sendVerificationEmail(data.email, code);
+                    resolve({
+                        errCode: 0,
+                        errMessage: "ok",
+                    });
+                }
+            }
+        } catch (e) {
+            console.error("Error in sendCode:", e);
+            reject({
+                errCode: -1,
+                errMessage: "Internal server error",
+            });
+        }
+    });
+};
+
+
 module.exports = {
     handleUserLogin: handleUserLogin,
     getAllUsers: getAllUsers,
@@ -268,5 +303,6 @@ module.exports = {
     deleteUser: deleteUser,
     getAllCodeService: getAllCodeService,
     verifyAccountUser: verifyAccountUser,
+    sendCode: sendCode,
 
 }

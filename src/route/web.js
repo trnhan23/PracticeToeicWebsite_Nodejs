@@ -30,7 +30,8 @@ let initWebRoutes = (app) => {
     router.put('/api/edit-user', userController.handleEditUser);
     router.delete('/api/delete-user', userController.handleDeleteUser);
     router.post('/api/verify-account-user', userController.handleVerifyAccountUser);
-
+    router.post('/api/send-code', userController.handleSendCode);
+    router.post('/api/check-send-code', userController.handleCheckSendCode);
     //search vocabulary
     router.get('/api/search-vocabulary', vocabularyController.getSearchVocabulary);
 

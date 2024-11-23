@@ -83,6 +83,17 @@ let getAllCode = async (req, res) => {
     }
 }
 
+let handleSendCode = async (req, res) => {
+    let data = req.body;
+    let message = await userService.sendCode(data);
+    return res.status(200).json(message);
+}
+
+let handleCheckSendCode = async (req, res) => {
+    let data = req.body;
+    return res.status(200).json(data);
+}
+
 module.exports = {
     handleLogin: handleLogin,
     handleGetAllUsers: handleGetAllUsers,
@@ -91,5 +102,7 @@ module.exports = {
     handleDeleteUser: handleDeleteUser,
     getAllCode: getAllCode,
     handleVerifyAccountUser: handleVerifyAccountUser,
+    handleSendCode: handleSendCode,
+    handleCheckSendCode: handleCheckSendCode,
 
 }
