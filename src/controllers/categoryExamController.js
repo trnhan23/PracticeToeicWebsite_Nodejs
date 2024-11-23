@@ -20,7 +20,7 @@ let handleGetAllCategoryExam = async (req, res) => {
                 errMessage: "ok",
                 cateExams
             })
-        }, 3000);
+        }, 1500);
     }
     catch (error) {
         return res.status(200).json({

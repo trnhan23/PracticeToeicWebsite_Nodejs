@@ -1,33 +1,43 @@
 import db from '../models/index';
 
 let get8LatestExams = async () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            let errCode;
-            let errMessage;
-            let result = await db.Exam.findAll({
-                limit: 8,
-                order: [['createdAt', 'DESC']],
-                raw: true,
-                nest: true
-            });
-            if (result && result.length > 0) {
-                errCode = 0;
-                errMessage = 'ok'
-            } else {
-                errCode = 1;
-                errMessage = 'No exam in database'
+    try {
+        let exams = await db.Exam.findAll({
+            include: [
+                {
+                    model: db.User_Exam,
+                    as: 'userExam_ExamData',
+                    attributes: ['userId', 'examId', 'statusExam'],
+                    required: false
+                }
+            ],
+            order: [['createdAt', 'DESC']],
+            raw: true,
+            nest: true
+        });
+
+        // Lọc ra các bài thi duy nhất dựa trên `id`
+        let uniqueExams = [];
+        let examIds = new Set();
+
+        for (let exam of exams) {
+            if (!examIds.has(exam.id)) {
+                uniqueExams.push(exam);
+                examIds.add(exam.id);
             }
-            resolve({
-                errCode: errCode,
-                errMessage: errMessage,
-                exams: result
-            });
-        } catch (e) {
-            reject(e);
+            if (uniqueExams.length === 8) break; // Chỉ lấy tối đa 8 bài thi
         }
-    });
+
+        return {
+            errCode: uniqueExams.length > 0 ? 0 : 1,
+            errMessage: uniqueExams.length > 0 ? 'ok' : 'No exam in database',
+            exams: uniqueExams
+        };
+    } catch (e) {
+        throw e; // Nếu muốn bắt lỗi, có thể thêm logic ở đây.
+    }
 };
+
 
 let getAllExams = (cateExamId, userId, page) => {
     return new Promise(async (resolve, reject) => {
