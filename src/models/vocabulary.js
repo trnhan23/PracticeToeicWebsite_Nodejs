@@ -20,9 +20,6 @@ module.exports = (sequelize, DataTypes) => {
         partOfSpeech: DataTypes.STRING,
         exampleSentence: DataTypes.STRING,
         pronunciation: DataTypes.STRING,
-        image: DataTypes.STRING,
-        audioFileUK: DataTypes.STRING,
-        audioFileUS: DataTypes.STRING,
     }, {
         sequelize,
         modelName: 'Vocabulary',

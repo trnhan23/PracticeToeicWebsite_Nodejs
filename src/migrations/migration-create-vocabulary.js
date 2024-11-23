@@ -30,18 +30,6 @@ module.exports = {
             pronunciation: {
                 type: Sequelize.STRING
             },
-            // image: DataTypes.STRING,
-            image: {
-                type: Sequelize.STRING
-            },
-            // audioFileUK: DataTypes.STRING,
-            audioFileUK: {
-                type: Sequelize.STRING
-            },
-            // audioFileUS: DataTypes.STRING,
-            audioFileUS: {
-                type: Sequelize.STRING
-            },
 
             createdAt: {
                 allowNull: false,

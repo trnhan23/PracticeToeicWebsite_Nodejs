@@ -50,13 +50,11 @@ let handleGetAllVocabulary = async (req, res) => {
 
 let handleCreateVocabulary = async (req, res) => {
     let message = await vocabService.createVocabulary(req.body);
-    console.log("vocabulary create: ", message);
     return res.status(200).json(message);
 }
 
 let handleEditVocabulary = async (req, res) => {
     let message = await vocabService.updateVocabulary(req.body);
-    console.log("vocabulary update: ", message);
     return res.status(200).json(message);
 }
 
@@ -68,7 +66,6 @@ let handleDeleteVocabulary = async (req, res) => {
         })
     }
     let message = await vocabService.deleteVocabulary(req.body.id);
-    console.log(message);
     return res.status(200).json(message);
 }
 

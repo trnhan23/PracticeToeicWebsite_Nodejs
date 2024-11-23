@@ -42,9 +42,6 @@ let createVocabulary = (data) => {
                     partOfSpeech: data.partOfSpeech,
                     exampleSentence: data.exampleSentence,
                     pronunciation: data.pronunciation,
-                    image: data.image,
-                    audioFileUK: data.audioFileUK,
-                    audioFileUS: data.audioFileUS,
                 })
                 resolve({
                     errCode: 0,
@@ -78,9 +75,6 @@ let updateVocabulary = (data) => {
                     vocab.partOfSpeech = data.partOfSpeech,
                     vocab.exampleSentence = data.exampleSentence,
                     vocab.pronunciation = data.pronunciation,
-                    vocab.image = data.image,
-                    vocab.audioFileUK = data.audioFileUK,
-                    vocab.audioFileUS = data.audioFileUS,
                     await vocab.save();
                 resolve({
                     errCode: 0,
