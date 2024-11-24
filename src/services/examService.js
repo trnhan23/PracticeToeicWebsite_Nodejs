@@ -105,7 +105,8 @@ let createExam = (data) => {
                     titleExam: data.titleExam,
                     stateExam: data.stateExam === '1' ? true : false,
                     countUserTest: data.countUserTest,
-                    countComment: data.countComment
+                    countComment: data.countComment,
+                    status: data.status
 
                 })
                 resolve({

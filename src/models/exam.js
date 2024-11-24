@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     titleExam: DataTypes.STRING,
     countUserTest: DataTypes.INTEGER,
     countComment: DataTypes.INTEGER,
+    status: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Exam',
