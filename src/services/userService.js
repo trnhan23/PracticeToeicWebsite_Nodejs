@@ -165,6 +165,7 @@ let updateUser = (data) => {
                 user.gender = data.gender;
                 user.avatar = data.avatar;
                 user.bio = data.bio;
+                user.status = data.status;
                 await user.save();
                 resolve({
                     errCode: 0,
