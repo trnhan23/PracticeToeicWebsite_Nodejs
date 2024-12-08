@@ -10,7 +10,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
       // userId: DataTypes.INTEGER,
       userId: {
         type: Sequelize.INTEGER
@@ -27,16 +26,12 @@ module.exports = {
       countUserTest: {
         type: Sequelize.INTEGER
       },
-
       countComment: {
         type: Sequelize.INTEGER
       },
-
       status: {
         type: Sequelize.BOOLEAN
       },
-
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

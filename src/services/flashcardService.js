@@ -353,9 +353,5 @@ module.exports = {
     updateAmountOfFlashcard: updateAmountOfFlashcard,
     getAllVocabInFlashcard: getAllVocabInFlashcard,
     deleteFlashcard: deleteFlashcard,
-    // updateFlashcard: updateFlashcard,
-    // saveVocabulary: saveVocabulary,
-    // saveVocabFlash: saveVocabFlash,
-    // deleteVocabFromFlashcard: deleteVocabFromFlashcard,
 
 }

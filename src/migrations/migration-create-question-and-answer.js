@@ -10,11 +10,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
       numberQuestion: {
         type: Sequelize.INTEGER
       },
-
       // questionText: DataTypes.STRING,
       questionText: {
         type: Sequelize.STRING
@@ -39,7 +37,6 @@ module.exports = {
       correctAnswer: {
         type: Sequelize.STRING
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

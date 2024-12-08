@@ -10,15 +10,12 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
       readAndListenId: {
         type: Sequelize.INTEGER
       },
-
       questionAndAnswerId: {
         type: Sequelize.INTEGER
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

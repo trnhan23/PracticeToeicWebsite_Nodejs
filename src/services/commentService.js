@@ -17,10 +17,14 @@ let createComment = (data) => {
                     contentComment: data.contentComment,
                     cmtDate: currentDate,
                 })
-                resolve({
-                    errCode: 0,
-                    errMessage: 'ok'
-                })
+
+                let res = await updateCountComment(data.examId);
+                if (res.errCode === 0) {
+                    resolve({
+                        errCode: 0,
+                        errMessage: 'ok'
+                    })
+                }
             }
         } catch (e) {
             reject(e);
@@ -88,6 +92,40 @@ let deleteComment = (commentId, currentId) => {
             errCode: 0,
             errMessage: `The comment is delete`
         })
+    })
+}
+
+let updateCountComment = (examId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!examId) {
+                resolve({
+                    errCode: 2,
+                    errMessage: 'Missing required parameters'
+                });
+            }
+
+            let exam = await db.Exam.findOne({
+                where: { id: examId },
+                // raw: false
+            })
+            if (exam) {
+                exam.countComment = exam.countComment + 1,
+                    await exam.save();
+
+                resolve({
+                    errCode: 0,
+                    errMessage: 'Update the count user test succeeds!'
+                });
+            } else {
+                resolve({
+                    errCode: 1,
+                    errMessage: `Error update count user test`
+                });
+            }
+        } catch (e) {
+            reject(e);
+        }
     })
 }
 

@@ -10,7 +10,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
       // correctAnswer: DataTypes.INTEGER,
       correctAnswer: {
         type: Sequelize.INTEGER
@@ -23,7 +22,6 @@ module.exports = {
       readingScore: {
         type: Sequelize.INTEGER
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

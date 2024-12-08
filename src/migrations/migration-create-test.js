@@ -47,7 +47,6 @@ module.exports = {
       countReadAnswer: {
         type: Sequelize.INTEGER
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

@@ -13,15 +13,12 @@ module.exports = {
       userId: {
         type: Sequelize.INTEGER
       },
-
       examId: {
         type: Sequelize.INTEGER
       },
-
       statusExam: {
         type: Sequelize.BOOLEAN
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

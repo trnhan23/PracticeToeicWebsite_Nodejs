@@ -23,7 +23,6 @@ module.exports = {
             isReview: {
                 type: Sequelize.BOOLEAN
             },
-
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

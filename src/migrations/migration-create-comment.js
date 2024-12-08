@@ -10,7 +10,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-
       // examId: DataTypes.INTEGER,
       examId: {
         type: Sequelize.INTEGER
@@ -31,7 +30,6 @@ module.exports = {
       cmtDate: {
         type: Sequelize.DATE
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

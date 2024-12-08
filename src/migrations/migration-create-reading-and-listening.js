@@ -31,7 +31,6 @@ module.exports = {
       examId: {
         type: Sequelize.INTEGER
       },
-
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
