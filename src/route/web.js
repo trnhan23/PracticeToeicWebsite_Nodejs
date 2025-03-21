@@ -10,6 +10,8 @@ import cmtController from '../controllers/commentComtroller';
 import testController from '../controllers/testController';
 import flashcardController from '../controllers/flashcardController';
 import uploadController from '../controllers/uploadController';
+import topicController from '../controllers/topicController';
+
 let router = express.Router();
 
 let initWebRoutes = (app) => {
@@ -82,7 +84,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-title-exam', testController.handleGetTitleExam);
 
     router.get('/api/get-info-statistic', testController.handleGetInfoStatistic);
-    
+
     // update countUserTest
     router.get('/api/update-count-user-test', testController.handleUpdateCountUserTest);
 
@@ -99,6 +101,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-vocab-in-flashcard', flashcardController.handleGetVocabInFlashcard);
     //router.delete('/api/delete-vocab-flashcard', flashcardController.handleDeleteVocabFromFlashcard);
 
+    //topics
+    router.get('/api/get-topics', topicController.handleGetTopics);
 
 
 
