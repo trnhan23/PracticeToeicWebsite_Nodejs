@@ -61,7 +61,7 @@ let handleCreateTopic = async (req, res) => {
 
 let handleUpdateTopic = async (req, res) => {
     try {
-        if (!req.body.id || !req.body.title) {
+        if (!req.body.id) {
             return res.status(400).json({
                 errCode: 1,
                 errMessage: "Missing required parameters!"
