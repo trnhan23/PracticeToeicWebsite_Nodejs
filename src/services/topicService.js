@@ -1,4 +1,5 @@
 import db from '../models/index';
+import uploadService from '../services/uploadService.js';
 
 let getTopics = (topicId) => {
     return new Promise(async (resolve, reject) => {
@@ -51,10 +52,50 @@ let deleteTopic = (topicId) => {
     });
 };
 
+let createTopic = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.title) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Please enter a title!"
+                });
+            }
 
+            if (!data.file) {
+                return resolve({
+                    errCode: 2,
+                    errMessage: "Please upload an image!"
+                });
+            }
+            const result = await uploadService.uploadFile(data.file);
+
+            if (!result) {
+                return reject({
+                    errCode: 3,
+                    errMessage: "Failed to upload image!"
+                });
+            }
+
+            await db.Topic.create({
+                title: data.title,
+                image: result.secure_url
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: "Topic created successfully"
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 module.exports = {
     getTopics: getTopics,
     deleteTopic: deleteTopic,
+    createTopic: createTopic,
 
 }
