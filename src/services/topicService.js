@@ -93,9 +93,58 @@ let createTopic = (data) => {
     });
 };
 
+let updateTopic = (data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!data.id) {
+                return resolve({
+                    errCode: 1,
+                    errMessage: "Missing topic ID!"
+                });
+            }
+
+            let topic = await db.Topic.findOne({ where: { id: data.id } });
+
+            if (!topic) {
+                return resolve({
+                    errCode: 2,
+                    errMessage: "Topic not found!"
+                });
+            }
+
+            let imageUrl = topic.image;
+
+            if (data.file) {
+                const result = await uploadService.uploadFile(data.file);
+                if (!result) {
+                    return reject({
+                        errCode: 3,
+                        errMessage: "Failed to upload image!"
+                    });
+                }
+                imageUrl = result.secure_url;
+            }
+
+            await topic.update({
+                title: data.title || topic.title,
+                image: imageUrl
+            });
+
+            resolve({
+                errCode: 0,
+                errMessage: "Topic updated successfully"
+            });
+
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
 module.exports = {
     getTopics: getTopics,
     deleteTopic: deleteTopic,
     createTopic: createTopic,
+    updateTopic: updateTopic,
 
 }

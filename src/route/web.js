@@ -105,8 +105,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-topics', topicController.handleGetTopics);
     router.delete('/api/delete-topic', topicController.handleDeleteTopic);
     router.post("/api/create-topic", upload.single("file"), topicController.handleCreateTopic);
-
-
+    router.put('/api/update-topic', upload.single("file"), topicController.handleUpdateTopic);
 
     return app.use("/", router);
 }
