@@ -11,6 +11,7 @@ import testController from '../controllers/testController';
 import flashcardController from '../controllers/flashcardController';
 import uploadController from '../controllers/uploadController';
 import topicController from '../controllers/topicController';
+import geminiController from '../controllers/geminiController';
 
 let router = express.Router();
 
@@ -106,6 +107,9 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-topic', topicController.handleDeleteTopic);
     router.post("/api/create-topic", upload.single("file"), topicController.handleCreateTopic);
     router.put('/api/update-topic', upload.single("file"), topicController.handleUpdateTopic);
+
+    //gemini
+    router.post("/api/gemini", geminiController.handleGetGeminiResponse);
 
     return app.use("/", router);
 }
