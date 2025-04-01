@@ -17,6 +17,31 @@ const getGeminiResponse = async (prompt) => {
     }
 };
 
+const translateText = async (text) => {
+    try {
+        const prompt = `Translate this English text to Vietnamese and return only the translated text without any extra words:\n"${text}"`;
+        const response = await getGeminiResponse(prompt);
+
+        if (response) {
+            return {
+                errCode: 0,
+                text: response.trim()
+            };
+        }
+        return {
+            errCode: 1,
+            errMessage: 'Không nhận được phản hồi từ Gemini API'
+        };
+    } catch (error) {
+        return {
+            errCode: 1,
+            errMessage: 'Lỗi khi gọi Gemini API',
+            details: error.message
+        };
+    }
+};
+
 module.exports = {
     getGeminiResponse: getGeminiResponse,
+    translateText: translateText
 };

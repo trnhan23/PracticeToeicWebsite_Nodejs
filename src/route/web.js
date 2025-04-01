@@ -110,6 +110,7 @@ let initWebRoutes = (app) => {
 
     //gemini
     router.post("/api/gemini", geminiController.handleGetGeminiResponse);
+    router.post("/api/gemini-translate", geminiController.handleTranslateText);
 
     return app.use("/", router);
 }
