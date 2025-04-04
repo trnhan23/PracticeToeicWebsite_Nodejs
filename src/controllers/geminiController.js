@@ -1,4 +1,4 @@
-const geminiService = require("../services/geminiService");
+import geminiService from "../services/geminiService";
 
 let handleGetGeminiResponse = async (req, res) => {
     try {
@@ -26,6 +26,8 @@ let handleGetGeminiResponse = async (req, res) => {
 
 let handleTranslateText = async (req, res) => {
     try {
+        console.log("Request body:", req.body);
+
         let { prompt } = req.body;
         if (!prompt) {
             return res.status(400).json({
@@ -40,12 +42,62 @@ let handleTranslateText = async (req, res) => {
         return res.status(500).json({
             errCode: -1,
             errMessage: "Lỗi server!",
+            details: error.message
         });
     }
-}
+};
+
+const handleSituationText = async (req, res) => {
+    try {
+        const { topic } = req.body;
+
+        if (!topic) {
+            return res.status(400).json({ message: "Missing topic parameter" });
+        }
+
+        const situation = await geminiService.getSituation(topic);
+        return res.status(200).json(situation);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const handleQuestionAndAnswer = async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        if (!text) {
+            return res.status(400).json({ message: "Missing text parameter" });
+        }
+
+        console.log("Received text:", text);
+
+        const response = await geminiService.getQuestionAndAnswer(text);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+const judgeAnswerController = async (req, res) => {
+    try {
+        const { question, answer, situation } = req.body;
+
+        const result = await geminiService.getJudgeAnswer(situation, question, answer);
+
+        console.log("Kết quả trả về từ service:", result);
+
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error("Có lỗi xảy ra:", error.message);
+        return res.status(500).json({ message: 'Có lỗi xảy ra khi đánh giá câu trả lời' });
+    }
+};
 
 module.exports = {
     handleGetGeminiResponse: handleGetGeminiResponse,
     handleTranslateText: handleTranslateText,
-
+    handleSituationText: handleSituationText,
+    handleQuestionAndAnswer: handleQuestionAndAnswer,
+    judgeAnswerController: judgeAnswerController,
 };
