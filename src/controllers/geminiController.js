@@ -79,6 +79,23 @@ const handleQuestionAndAnswer = async (req, res) => {
     }
 };
 
+const handleQuestionAndAnswer1 = async (req, res) => {
+    try {
+        const { text, situation, question } = req.body;
+
+        if (!text) {
+            return res.status(400).json({ message: "Missing text parameter" });
+        }
+
+        console.log("Received text:", text);
+
+        const response = await geminiService.getQuestionAndAnswer1(text);
+        return res.status(200).json(response);
+    } catch (error) {
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
 const judgeAnswerController = async (req, res) => {
     try {
         const { question, answer, situation } = req.body;
@@ -100,4 +117,5 @@ module.exports = {
     handleSituationText: handleSituationText,
     handleQuestionAndAnswer: handleQuestionAndAnswer,
     judgeAnswerController: judgeAnswerController,
+    handleQuestionAndAnswer1: handleQuestionAndAnswer1
 };
