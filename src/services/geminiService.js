@@ -98,6 +98,57 @@ const getQuestionAndAnswer = async (text) => {
     }
 };
 
+const getQuestionAndAnswer1 = async (text, situation, question) => {
+    try {
+        let prompt = "";
+        const isQuestion = text.trim().endsWith("?");
+
+        if (isQuestion) {
+            prompt = `
+                Given the following situation: "${situation}"
+                And the previous question: "${question}"
+                Please follow this instruction:
+                Answer the following question briefly (1-2 sentences) and ask a follow-up question that is relevant and helps continue the conversation naturally. 
+                (Both the answer and follow-up question must be appropriate to the situation above):
+                "${text}"
+            `.trim();
+        } else {
+            prompt = `
+                Based on the answer: "${text}"
+                Given the situation: "${situation}"
+                And the previous question: "${question}"
+                Check whether the answer is appropriate to the situation and question.
+                    If yes, generate a short follow-up question to deepen the discussion. (Only output the question content, do not include any extra phrases such as: Yes, the answer is appropriate, Yes, ...).
+                    If not, provide a brief suggestion (1–2 sentences) on how to answer better in this context, then ask a relevant follow-up question to help the conversation flow naturally. (Combine the suggestion and follow-up question into a single paragraph, and only include the required content — no extra introductory words or formatting.)
+                (Both your answer and question must align with the situation above.)
+            `.trim();
+        }
+
+        const response = await getGeminiResponse(prompt);
+
+        const lines = response
+            .replace(/Follow-up:\s*/gi, "")
+            .split("\n")
+            .map(line => line.trim())
+            .filter(line => line);
+
+        let result = "";
+
+        if (isQuestion) {
+            const answer = lines[0] || "I'm not sure.";
+            const followUpQuestion = lines[1] || "What are your thoughts on this?";
+            result = `${answer} ${followUpQuestion}`;
+        } else {
+            result = lines.join(" ") || "Can you clarify your response further?";
+        }
+
+        return { result };
+    } catch (error) {
+        console.error("Error in getQuestionAndAnswer:", error);
+        return { error: "Error connecting to Gemini API. Please try again later." };
+    }
+};
+
 const getJudgeAnswer = async (situation, question, answer) => {
     try {
         const response = await axios.post(`${API_URL}?key=${API_KEY}`, {
@@ -171,5 +222,6 @@ module.exports = {
     translateText: translateText,
     getSituation: getSituation,
     getQuestionAndAnswer: getQuestionAndAnswer,
+    getQuestionAndAnswer1: getQuestionAndAnswer1,
     getJudgeAnswer: getJudgeAnswer
 };

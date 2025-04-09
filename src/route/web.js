@@ -113,6 +113,7 @@ let initWebRoutes = (app) => {
     router.post("/api/gemini-translate", geminiController.handleTranslateText);
     router.post("/api/gemini-situation", geminiController.handleSituationText);
     router.post("/api/gemini-questionandanswer", geminiController.handleQuestionAndAnswer);
+    router.post("/api/gemini-questionandanswer1", geminiController.handleQuestionAndAnswer1);
     router.post("/api/gemini-judge-answer", geminiController.judgeAnswerController);
 
     return app.use("/", router);
