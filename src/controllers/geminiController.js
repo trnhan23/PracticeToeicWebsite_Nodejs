@@ -89,7 +89,7 @@ const handleQuestionAndAnswer1 = async (req, res) => {
 
         console.log("Received text:", text);
 
-        const response = await geminiService.getQuestionAndAnswer1(text);
+        const response = await geminiService.getQuestionAndAnswer1(text, situation, question);
         return res.status(200).json(response);
     } catch (error) {
         return res.status(500).json({ message: "Internal server error" });
