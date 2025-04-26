@@ -217,11 +217,39 @@ const getJudgeAnswer = async (situation, question, answer) => {
     }
 };
 
+const getGeminiChatbox = async (textUser) => {
+    try {
+        const prompt = `
+            Bạn đóng vai trò là một trợ lý AI chuyên sâu về tiếng Anh trong một website học tiếng Anh.
+            Nhiệm vụ của bạn là phản hồi các câu hỏi hoặc yêu cầu của người dùng bằng tiếng Việt, nhưng nội dung tập trung
+            vào kiến thức tiếng Anh: từ vựng, ngữ pháp, giao tiếp, luyện nghe, đọc hiểu, mẹo thi cử, v.v.
+
+            Nội dung phản hồi cần:
+            - Giải thích rõ ràng, dễ hiểu.
+            - Đưa ra ví dụ minh họa bằng tiếng Anh (có dịch tiếng Việt nếu cần).
+            - Tập trung đúng yêu cầu người dùng đưa ra.
+            - Trình bày ngắn gọn, súc tích nhưng vẫn đầy đủ ý.
+
+            Câu hỏi của người dùng: "${textUser}"
+
+            Lưu ý: Các phản hồi được đưa ra dưới dạng markdown.
+        `;
+        const response = await getGeminiResponse(prompt);
+        return response;
+    } catch (error) {
+        console.error("Error in getGeminiChatbox:", error);
+        return "Error connecting to Gemini API. Please try again later.";
+    }
+};
+
+
 module.exports = {
     getGeminiResponse: getGeminiResponse,
     translateText: translateText,
     getSituation: getSituation,
     getQuestionAndAnswer: getQuestionAndAnswer,
     getQuestionAndAnswer1: getQuestionAndAnswer1,
-    getJudgeAnswer: getJudgeAnswer
+    getJudgeAnswer: getJudgeAnswer,
+    getGeminiChatbox: getGeminiChatbox,
+
 };
