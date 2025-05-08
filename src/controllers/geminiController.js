@@ -135,6 +135,29 @@ let handleGetGeminiChatbox = async (req, res) => {
     }
 };
 
+const JudgeFluent = async (req, res) => {
+    try {
+        const { text } = req.body;
+
+        if (!text || text.trim() === "") {
+            return res.status(400).json({ error: 'Văn bản không được để trống' });
+        }
+
+        const { score, comment } = await geminiService.countFluencyScore(text);
+
+
+        return res.status(200).json({
+            transcript: text,
+            fluencyScore: score,
+            comment
+        });
+
+    } catch (error) {
+        console.error('Lỗi khi đánh giá độ lưu loát:', error);
+        return res.status(500).json({ error: 'Đã xảy ra lỗi khi đánh giá độ lưu loát' });
+    }
+};
+
 module.exports = {
     handleGetGeminiResponse: handleGetGeminiResponse,
     handleTranslateText: handleTranslateText,
@@ -143,5 +166,6 @@ module.exports = {
     judgeAnswerController: judgeAnswerController,
     handleQuestionAndAnswer1: handleQuestionAndAnswer1,
     handleGetGeminiChatbox: handleGetGeminiChatbox,
-
+    JudgeFluent: JudgeFluent,
+    
 };

@@ -242,6 +242,67 @@ const getGeminiChatbox = async (textUser) => {
     }
 };
 
+const countFluencyScore = async (text) => {
+    try {
+        const prompt = `
+Bạn là chuyên gia đánh giá kỹ năng nói tiếng Anh. Tôi sẽ gửi một đoạn transcript.
+Hãy chấm điểm độ lưu loát trên thang 100 dựa trên:
+- Từ đệm (uh, um, you know,...)
+- Lặp từ
+- Độ dài câu
+- Vốn từ
+
+Sau đó, hãy viết một nhận xét ngắn (1-2 câu) nêu lỗi chính và gợi ý cải thiện.
+
+Transcript: "${text}"
+
+❗ Chỉ trả về JSON, không thêm chú thích:
+{
+  "score": 85,
+  "comment": "Bạn sử dụng nhiều từ đệm và lặp từ. Cần luyện nói trôi chảy và dùng từ phong phú hơn."
+}
+        `.trim();
+
+        // Gọi hàm `getGeminiResponse` để lấy phản hồi từ Gemini
+        const response = await getGeminiResponse(prompt);
+
+        if (response) {
+            try {
+                // Loại bỏ các dấu backtick (```json, ``` và những dòng mới nếu có)
+                const cleanedResponse = response.replace(/^```json|\n?```$/g, '').trim();
+
+                // Kiểm tra lại nếu phản hồi có chứa các ký tự không hợp lệ
+                const sanitizedResponse = cleanedResponse.replace(/`/g, ''); // Loại bỏ dấu backtick nếu có
+
+                // Parse JSON response
+                const parsed = JSON.parse(sanitizedResponse);
+
+                return {
+                    score: Math.max(0, Math.min(100, Math.round(parsed.score))),
+                    comment: parsed.comment || "Không có nhận xét."
+                };
+            } catch (err) {
+                console.error("Lỗi khi parse JSON từ Gemini:", err.message);
+                console.log("Nội dung phản hồi:", response);
+                return {
+                    score: 0,
+                    comment: "Phản hồi từ Gemini không hợp lệ. Vui lòng thử lại."
+                };
+            }
+        }
+
+        return {
+            score: 0,
+            comment: "Không nhận được phản hồi từ Gemini API"
+        };
+    } catch (error) {
+        console.error("Lỗi khi gọi Gemini API:", error.message);
+        return {
+            score: 0,
+            comment: "Đã xảy ra lỗi khi đánh giá. Vui lòng thử lại sau."
+        };
+    }
+};
 
 module.exports = {
     getGeminiResponse: getGeminiResponse,
@@ -251,5 +312,6 @@ module.exports = {
     getQuestionAndAnswer1: getQuestionAndAnswer1,
     getJudgeAnswer: getJudgeAnswer,
     getGeminiChatbox: getGeminiChatbox,
+    countFluencyScore: countFluencyScore,
 
 };
