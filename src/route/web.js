@@ -117,7 +117,8 @@ let initWebRoutes = (app) => {
     router.post("/api/gemini-questionandanswer1", geminiController.handleQuestionAndAnswer1);
     router.post("/api/gemini-judge-answer", geminiController.judgeAnswerController);
     router.post('/api/gemini-fluent', geminiController.JudgeFluent);
-
+    router.post('/api/gemini-suggested-answer', geminiController.getSuggestedAnswer);
+    
     return app.use("/", router);
 }
 

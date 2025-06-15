@@ -304,6 +304,52 @@ Transcript: "${text}"
     }
 };
 
+const getSuggestedAnswer = async (situation, question) => {
+    try {
+        const response = await axios.post(`${API_URL}?key=${API_KEY}`, {
+            contents: [{
+                role: "user",
+                parts: [{
+                    text: `You are a highly reliable assistant specialized in generating correct answers based on the given situation and question.
+
+                    INSTRUCTIONS:
+                    - Carefully analyze the provided situation and question.
+                    - ONLY generate an answer directly relevant to the given situation and question.
+                    - Do NOT generate unrelated information or introduce content outside of the provided context.
+                    - If you do not have enough information to answer, politely state that you need more details.
+                    - Use simple, clear, and easy-to-understand English suitable for customer conversations.
+                    - Provide helpful steps, guidance, or suggestions whenever possible.
+                    - Avoid vague or generic responses. Always be practical and actionable.
+
+                    INPUT:
+                    Situation: "${situation}"
+                    Question: "${question}"
+
+                    OUTPUT FORMAT:
+                    Suggested Answer: <Your answer here>`
+                }]
+            }]
+        }, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const candidate = response.data.candidates?.[0];
+        const aiResponse = candidate?.content?.parts?.[0]?.text || "";
+
+        // Parse kết quả
+        const match = aiResponse.match(/Suggested Answer:\s*(.*)/i);
+        const suggestedAnswer = match ? match[1].trim() : "No valid answer received.";
+
+        return suggestedAnswer;
+
+    } catch (error) {
+        throw new Error('API request failed: ' + error);
+    }
+};
+
+
 module.exports = {
     getGeminiResponse: getGeminiResponse,
     translateText: translateText,
@@ -313,5 +359,6 @@ module.exports = {
     getJudgeAnswer: getJudgeAnswer,
     getGeminiChatbox: getGeminiChatbox,
     countFluencyScore: countFluencyScore,
+    getSuggestedAnswer: getSuggestedAnswer
 
 };

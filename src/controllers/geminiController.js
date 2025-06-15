@@ -158,6 +158,22 @@ const JudgeFluent = async (req, res) => {
     }
 };
 
+const getSuggestedAnswer = async (req, res) => {
+    try {
+        const { question, situation } = req.body;
+
+        if (!question || !situation) {
+            return res.status(400).json({ error: 'Thiếu thông tin câu hỏi hoặc câu trả lời' });
+        }
+
+        const suggestedAnswer = await geminiService.getSuggestedAnswer(situation, question);
+
+        return res.status(200).json(suggestedAnswer);
+    } catch (error) {
+        return res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy câu trả lời gợi ý' });
+    }
+}
+
 module.exports = {
     handleGetGeminiResponse: handleGetGeminiResponse,
     handleTranslateText: handleTranslateText,
@@ -167,5 +183,5 @@ module.exports = {
     handleQuestionAndAnswer1: handleQuestionAndAnswer1,
     handleGetGeminiChatbox: handleGetGeminiChatbox,
     JudgeFluent: JudgeFluent,
-    
+    getSuggestedAnswer: getSuggestedAnswer,
 };
